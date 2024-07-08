@@ -4,14 +4,14 @@
 >
 > Windows 可插拔身份验证是 MySQL 企业版中的一个扩展功能，这是一款商业产品。要了解更多关于商业产品的信息，请参见 https://www.mysql.com/products/。
 
-适用于 Windows 的 MySQL 企业版支持一种在 Windows 上执行外部身份验证的方法，使 MySQL 服务器可以使用本地 Windows 服务来身份验证客户端连接。已登录 Windows 的用户可以基于其环境中的信息从 MySQL 客户端程序连接到服务器，而无需指定额外的密码。
+适用于 Windows 的 MySQL 企业版支持一种在 Windows 上执行外部身份验证的方法，使 MySQL 服务器可以使用本地 Windows 服务来认证客户端连接。已登录 Windows 的用户可以基于其环境中的信息从 MySQL 客户端程序连接到服务器，而无需指定额外的密码。
 
-客户端和服务器在身份验证握手中交换数据包。通过这种交换，服务器创建一个代表客户端在 Windows 操作系统中的身份的安全上下文对象。此身份包括客户端账户的名称。Windows 可插拔身份验证使用客户端的身份检查其是否为给定账户或组的成员。默认情况下，协商使用 Kerberos 进行认证，如果 Kerberos 不可用，则使用 NTLM。
+客户端和服务器在身份验证握手中交换数据包。通过这种交换，服务器创建一个代表客户端在 Windows 操作系统中的身份的安全上下文对象。此身份包括客户端账户的名称。Windows 可插拔认证使用客户端的身份检查其是否为给定账户或组的成员。默认情况下，协商使用 Kerberos 进行认证，如果 Kerberos 不可用，则使用 NTLM。
 
 Windows 可插拔身份验证提供以下功能：
 
-- **外部身份验证**：Windows 身份验证使 MySQL 服务器可以接受从 MySQL 授权表之外定义的已登录 Windows 的用户的连接。
-- **代理用户支持**：Windows 身份验证可以向 MySQL 返回一个与客户端程序传递的外部用户名不同的用户名。这意味着插件可以返回定义了外部 Windows 身份验证用户应具有的权限的 MySQL 用户。例如，一个名为 joe 的 Windows 用户可以连接并拥有名为 developer 的 MySQL 用户的权限。
+- **外部身份验证**：Windows 认证使 MySQL 服务器可以接受从 MySQL 授权表之外定义的已登录 Windows 的用户的连接。
+- **代理用户支持**：Windows 身份验证可以向 MySQL 返回一个与客户端程序传递的外部用户名不同的用户名。这意味着插件可以返回定义了外部 Windows 认证用户应具有的权限的 MySQL 用户。例如，一个名为 joe 的 Windows 用户可以连接并拥有名为 developer 的 MySQL 用户的权限。
 
 下表显示了插件和库文件的名称。文件必须位于 `plugin_dir` 系统变量指定的目录中。
 
@@ -33,7 +33,7 @@ Windows 可插拔身份验证提供以下功能：
 - 卸载 Windows 可插拔身份验证
 - 使用 Windows 可插拔身份验证
 
-有关 MySQL 可插拔身份验证的一般信息，请参见 [8.2.17 节, “可插拔身份验证”](#8.2.17-可插拔认证)。有关代理用户的信息，请参见 [8.2.19 节, “代理用户”](#8.2.19-代理用户)。
+有关 MySQL 可插拔身份验证的一般信息，请参见 [8.2.17 节, “可插拔认证”](#8.2.17-可插拔认证)。有关代理用户的信息，请参见 [8.2.19 节, “代理用户”](#8.2.19-代理用户)。
 
 #### 安装 Windows 可插拔身份验证
 
@@ -73,7 +73,7 @@ mysql> SELECT PLUGIN_NAME, PLUGIN_STATUS
 
 如果插件未能初始化，请检查服务器错误日志中的诊断消息。
 
-要将 MySQL 账户与 Windows 身份验证插件关联，请参见“使用 Windows 可插拔身份验证”。其他插件控制由系统变量 `authentication_windows_use_principal_name` 和 `authentication_windows_log_level` 提供。参见 [7.1.8 节, “服务器系统变量”](#7.1.8-服务器系统变量)。
+要将 MySQL 账户与 Windows 身份验证插件关联，请参见“使用 Windows 可插拔认证”。其他插件控制由系统变量 `authentication_windows_use_principal_name` 和 `authentication_windows_log_level` 提供。参见 [7.1.8 节, “服务器系统变量”](#7.1.8-服务器系统变量)。
 
 #### 卸载 Windows 可插拔身份验证
 
@@ -90,9 +90,9 @@ UNINSTALL PLUGIN authentication_windows;
 
 #### 使用 Windows 可插拔身份验证
 
-Windows 身份验证插件支持使用 MySQL 账户，使已登录 Windows 的用户可以连接到 MySQL 服务器，而无需指定额外的密码。假设服务器已启用服务器端插件，如“安装 Windows 可插拔身份验证”中所述。一旦 DBA 启用了服务器端插件并设置了使用它的账户，客户端无需其他设置即可使用这些账户连接。
+Windows 身份验证插件支持使用 MySQL 账户，使已登录 Windows 的用户可以连接到 MySQL 服务器，而无需指定额外的密码。假设服务器已启用服务器端插件，如“安装 Windows 可插拔认证”中所述。一旦 DBA 启用了服务器端插件并设置了使用它的账户，客户端无需其他设置即可使用这些账户连接。
 
-要在 `CREATE USER` 语句的 `IDENTIFIED WITH` 子句中引用 Windows 身份验证插件，请使用名称 `authentication_windows`。假设 Windows 用户 Rafal 和 Tasha 应被允许连接到 MySQL，以及 Administrators 或 Power Users 组中的任何用户。要进行此设置，请创建一个使用 Windows 插件进行身份验证的名为 `sql_admin` 的 MySQL 账户：
+要在 `CREATE USER` 语句的 `IDENTIFIED WITH` 子句中引用 Windows 身份验证插件，请使用名称 `authentication_windows`。假设 Windows 用户 Rafal 和 Tasha 应被允许连接到 MySQL，以及 Administrators 或 Power Users 组中的任何用户。要进行此设置，请创建一个使用 Windows 插件进行认证的名为 `sql_admin` 的 MySQL 账户：
 
 ```sql
 CREATE USER sql_admin
@@ -100,7 +100,7 @@ CREATE USER sql_admin
   AS 'Rafal, Tasha, Administrators, "Power Users"';
 ```
 
-插件名称是 `authentication_windows`。`AS` 关键字后的字符串是身份验证字符串。它指定了名为 Rafal 或 Tasha 的 Windows 用户，以及 Administrators 或 Power Users 组中的任何 Windows 用户可以作为 MySQL 用户 `sql_admin` 进行身份验证。后者组名包含空格，因此必须用双引号引起来。
+插件名称是 `authentication_windows`。`AS` 关键字后的字符串是身份验证字符串。它指定了名为 Rafal 或 Tasha 的 Windows 用户，以及 Administrators 或 Power Users 组中的任何 Windows 用户可以作为 MySQL 用户 `sql_admin` 进行认证。后者组名包含空格，因此必须用双引号引起来。
 
 创建 `sql_admin` 账户后，已登录 Windows 的用户可以尝试使用该账户连接到服务器：
 
@@ -110,7 +110,7 @@ C:\> mysql --user=sql_admin
 
 此处不需要密码。`authentication_windows` 插件使用 Windows 安全 API 检查哪个 Windows 用户正在连接。如果该用户名为 Rafal 或 Tasha，或者是 Administrators 或 Power Users 组的成员，服务器将授予访问权限，并将客户端身份验证为 `sql_admin`，并具有授予 `sql_admin` 账户的权限。否则，服务器将拒绝访问。
 
-Windows 身份验证插件的身份验证字符串语法遵循以下规则：
+Windows 身份验证插件的认证字符串语法遵循以下规则：
 
 - 字符串由一个或多个用户映射组成，用逗号分隔。
 - 每个用户映射将 Windows 用户或组名与 MySQL 用户名相关联：

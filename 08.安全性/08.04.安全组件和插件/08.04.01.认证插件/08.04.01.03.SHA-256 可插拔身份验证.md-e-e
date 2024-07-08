@@ -1,0 +1,167 @@
+#### 8.4.1.3 SHA-256 可插拔身份验证
+
+MySQL 提供了两个实现用户账户密码 SHA-256 哈希的身份验证插件：
+
+- `caching_sha2_password`：实现 SHA-256 身份验证（类似于已弃用的 `sha256_password`），但在服务器端使用缓存以提高性能，并具有更广泛的适用性。
+- `sha256_password`：实现基本的 SHA-256 身份验证。从 MySQL 8.0.16 开始，该插件已被弃用，并将在未来版本中移除。
+
+本节描述了原始的非缓存 SHA-2 身份验证插件。有关缓存插件的信息，请参阅 [第 8.4.1.2 节，“缓存 SHA-2 可插拔身份验证”](#8.4.1.2)。
+
+> **重要**
+>
+> 在 MySQL 8.0 中，`caching_sha2_password` 是默认的身份验证插件，而不是 `mysql_native_password`。有关此更改对服务器操作和服务器与客户端及连接器兼容性的影响的信息，请参阅 [caching_sha2_password 作为首选身份验证插件](#caching_sha2_password-as-the-preferred-authentication-plugin)。
+
+由于 `caching_sha2_password` 是 MySQL 8.0 中的默认身份验证插件，并提供了 `sha256_password` 身份验证插件的全部功能，因此 `sha256_password` 已被弃用；预计将来会被移除。使用 `sha256_password` 进行身份验证的 MySQL 账户应迁移到 `caching_sha2_password`。
+
+> **重要**
+>
+> 要使用 `sha256_password` 插件验证的账户连接到服务器，必须使用 TLS 连接或支持使用 RSA 密钥对进行密码交换的未加密连接，如本节后面所述。无论哪种方式，`sha256_password` 插件都使用 MySQL 的加密功能。参阅 [第 8.3 节，“使用加密连接”](#8.3)。
+
+> **注意**
+>
+> 在插件名称 `sha256_password` 中，“sha256” 指插件用于加密的 256 位摘要长度。在 `caching_sha2_password` 的名称中，“sha2” 更普遍地指 SHA-2 加密算法类，其中 256 位加密是一种实例。后者的命名选择为将来可能的摘要长度扩展留有余地，而无需更改插件名称。
+
+下表显示了服务器端和客户端的插件名称。
+
+表 8.18 SHA-256 身份验证的插件和库名称
+
+| 插件或文件   | 插件或文件名称     |
+| ------------ | ------------------ |
+| 服务器端插件 | `sha256_password`  |
+| 客户端插件   | `sha256_password`  |
+| 库文件       | 无（插件是内置的） |
+
+以下部分提供了有关 SHA-256 可插拔身份验证的安装和使用信息：
+
+- [安装 SHA-256 可插拔身份验证](#installing-sha-256-pluggable-authentication)
+- [使用 SHA-256 可插拔身份验证](#using-sha-256-pluggable-authentication)
+
+关于 MySQL 中可插拔身份验证的一般信息，请参阅 [第 8.2.17 节，“可插拔身份验证”](#8.2.17)。
+
+##### 安装 SHA-256 可插拔身份验证
+
+`sha256_password` 插件存在服务器端和客户端形式：
+
+- 服务器端插件内置于服务器中，无需显式加载，且无法通过卸载禁用。
+- 客户端插件内置于 `libmysqlclient` 客户端库中，任何链接到 `libmysqlclient` 的程序都可以使用。
+
+##### 使用 SHA-256 可插拔身份验证
+
+要设置使用已弃用的 `sha256_password` 插件进行 SHA-256 密码哈希的账户，请使用以下语句，其中 `password` 是所需的账户密码：
+
+```sql
+CREATE USER 'sha256user'@'localhost' IDENTIFIED WITH sha256_password BY 'password';
+```
+
+服务器将 `sha256_password` 插件分配给该账户，并使用 SHA-256 加密密码，将这些值存储在 `mysql.user` 系统表的 `plugin` 和 `authentication_string` 列中。
+
+上述说明并不假设 `sha256_password` 是默认身份验证插件。如果 `sha256_password` 是默认身份验证插件，可以使用更简单的 `CREATE USER` 语法。
+
+要启动默认身份验证插件设置为 `sha256_password` 的服务器，请在服务器选项文件中添加以下行：
+
+```ini
+[mysqld]
+default_authentication_plugin=sha256_password
+```
+
+这会使 `sha256_password` 插件成为新账户的默认插件。因此，可以创建账户并设置其密码，而无需显式指定插件：
+
+```sql
+CREATE USER 'sha256user'@'localhost' IDENTIFIED BY 'password';
+```
+
+将 `default_authentication_plugin` 设置为 `sha256_password` 的另一个结果是，要使用其他插件创建账户，必须显式指定该插件。例如，要使用 `mysql_native_password` 插件，请使用以下语句：
+
+```sql
+CREATE USER 'nativeuser'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+```
+
+`sha256_password` 支持通过安全传输进行连接。如果按照本节后面给出的 RSA 配置程序，它还支持通过未加密连接使用 RSA 进行加密密码交换。RSA 支持具有以下特点：
+
+- 在服务器端，两个系统变量命名 RSA 私钥和公钥对文件：`sha256_password_private_key_path` 和 `sha256_password_public_key_path`。如果要使用的密钥文件名称与系统变量默认值不同，数据库管理员必须在服务器启动时设置这些变量。
+- 服务器使用 `sha256_password_auto_generate_rsa_keys` 系统变量来确定是否自动生成 RSA 密钥对文件。参见 [第 8.3.3 节，“创建 SSL 和 RSA 证书和密钥”](#8.3.3)。
+- `Rsa_public_key` 状态变量显示 `sha256_password` 身份验证插件使用的 RSA 公钥值。
+
+拥有 RSA 公钥的客户端可以在连接过程中与服务器进行基于 RSA 密钥对的密码交换，如后面所述。
+
+对于通过使用 `sha256_password` 和基于 RSA 公钥对的密码交换进行身份验证的账户的连接，服务器根据需要向客户端发送 RSA 公钥。然而，如果客户端主机上有公钥副本，客户端可以使用它来节省客户端/服务器协议中的往返请求：
+
+对于这些命令行客户端，使用 `--server-public-key-path` 选项指定 RSA 公钥文件：`mysql`、`mysqladmin`、`mysqlbinlog`、`mysqlcheck`、`mysqldump`、`mysqlimport`、`mysqlpump`、`mysqlshow`、`mysqlslap`、`mysqltest`、`mysql_upgrade`。
+
+对于使用 C API 的程序，通过传递 `MYSQL_SERVER_PUBLIC_KEY` 选项和文件名来调用 `mysql_options()` 以指定 RSA 公钥文件。
+
+对于副本使用者，使用 `CHANGE REPLICATION SOURCE TO` 语句（从 MySQL 8.0.23 开始）或 `CHANGE MASTER TO` 语句（MySQL 8.0.23 之前）和 `SOURCE_PUBLIC_KEY_PATH | MASTER_PUBLIC_KEY_PATH` 选项指定 RSA 公钥文件。对于组复制，`group_replication_recovery_get_public_key` 系统变量起到相同的作用。
+
+对于使用 `sha256_password` 插件的客户端，在连接到服务器时密码从不会以明文形式暴露。密码传输的方式取决于是否使用安全连接或 RSA 加密：
+
+- 如果连接是安全的，则不需要 RSA 密钥对且不会使用。这适用于使用 TLS 加密的连接。密码以明文形式发送，但由于连接是安全的，无法被窥探。
+
+> **注意**
+> 与 `caching_sha2_password` 不同，即使共享内存传输默认是安全的，`sha256_password` 插件也不将共享内存连接视为安全连接。
+
+- 如果连接不安全且可用 RSA 密钥对，连接仍保持未加密。这适用于未使用 TLS 加密的连接。RSA 仅用于客户端和服务器之间的密码交换，以防止密码被窥探。当服务器接收到加密密码时，会将其解密。加密中使用了扰乱机制以防止重复攻击。
+
+- 如果未使用安全连接且不可用 RSA 加密，则连接尝试失败，因为密码无法在不暴露为明文的情况下发送。
+
+> **注意**
+> 要使用 `sha256_password` 进行 RSA 密码加密，客户端和服务器都必须使用 OpenSSL 编译，而不仅仅是其中一个。
+
+假设 MySQL 已使用 OpenSSL 编译，请按以下步骤在客户端连接过程中启用基于 RSA 密钥对的密码交换：
+
+1. 按照 [第 8.3.3 节，“创建 SSL 和 RSA 证书和密钥”](#8.3.3) 中的说明创建 RSA 私钥和公钥文件。
+2. 如果私钥和公钥文件位于数据目录中并且名为 `private_key.pem` 和 `public_key.pem`（`sha
+3. 256_password_private_key_path` 和 `sha256_password_public_key_path` 系统变量的默认值），服务器在启动时会自动使用它们。
+   3. 否则，要显式命名密钥文件，请在服务器选项文件中将系统变量设置为密钥文件名称。如果文件位于服务器数据目录中，则无需指定其完整路径名：
+
+   ```ini
+   [mysqld]
+   sha256_password_private_key_path=myprivkey.pem
+   sha256_password_public_key_path=mypubkey.pem
+   ```
+
+   4. 如果密钥文件不位于数据目录中，或者要在系统变量值中明确其位置，请使用完整路径名：
+
+   ```ini
+   [mysqld]
+   sha256_password_private_key_path=/usr/local/mysql/myprivkey.pem
+   sha256_password_public_key_path=/usr/local/mysql/mypubkey.pem
+   ```
+
+   5. 重启服务器，然后连接并检查 `Rsa_public_key` 状态变量的值。显示的值与此处显示的不同，但应为非空值：
+
+   ```sql
+   mysql> SHOW STATUS LIKE 'Rsa_public_key'\G
+   *************************** 1. row ***************************
+   Variable_name: Rsa_public_key
+           Value: -----BEGIN PUBLIC KEY-----
+   MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDO9nRUDd+KvSZgY7cNBZMNpwX6
+   MvE1PbJFXO7u18nJ9lwc99Du/E7lw6CVXw7VKrXPeHbVQUzGyUNkf45Nz/ckaaJa
+   aLgJOBCIDmNVnyU54OT/1lcs2xiyfaDMe8fCJ64ZwTnKbY2gkt1IMjUAB5Ogd5kJ
+   g8aV7EtKwyhHb0c30QIDAQAB
+   -----END PUBLIC KEY-----
+   ```
+
+   如果该值为空，则服务器发现密钥文件存在问题。检查错误日志以获取诊断信息。
+
+   服务器配置了 RSA 密钥文件后，使用 `sha256_password` 插件进行身份验证的账户可以选择使用这些密钥文件连接到服务器。如前所述，此类账户可以使用安全连接（在这种情况下不使用 RSA）或使用 RSA 进行密码交换的未加密连接。假设使用未加密连接。例如：
+
+   ```shell
+   $> mysql --ssl-mode=DISABLED -u sha256user -p
+   Enter password: password
+   ```
+
+   对于 `sha256user` 的此连接尝试，服务器确定 `sha256_password` 是适当的身份验证插件并调用它（因为这是在 `CREATE USER` 时指定的插件）。插件发现连接未加密，因此需要使用 RSA 加密传输密码。在这种情况下，插件将 RSA 公钥发送给客户端，客户端使用它加密密码并将结果返回给服务器。插件使用服务器端的 RSA 私钥解密密码，并根据密码是否正确接受或拒绝连接。
+
+   服务器根据需要向客户端发送 RSA 公钥。然而，如果客户端有一个包含服务器所需 RSA 公钥的本地副本的文件，可以使用 `--server-public-key-path` 选项指定该文件：
+
+   ```shell
+   $> mysql --ssl-mode=DISABLED -u sha256user -p --server-public-key-path=file_name
+   Enter password: password
+   ```
+
+   `--server-public-key-path` 选项指定的文件中的公钥值应与服务器端 `sha256_password_public_key_path` 系统变量命名的文件中的密钥值相同。如果密钥文件包含有效的公钥值但值不正确，则会发生拒绝访问错误。如果密钥文件不包含有效的公钥，则客户端程序无法使用它。在这种情况下，`sha256_password` 插件会像没有指定 `--server-public-key-path` 选项一样将公钥发送给客户端。
+
+   客户端用户可以通过两种方式获取 RSA 公钥：
+
+   - 数据库管理员可以提供公钥文件的副本。
+   - 可以通过其他方式连接到服务器的客户端用户可以使用 `SHOW STATUS LIKE 'Rsa_public_key'` 语句并将返回的密钥值保存在文件中。
