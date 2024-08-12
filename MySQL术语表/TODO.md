@@ -226,37 +226,62 @@ Kerberos身份验证服务器。`AS`也可以指身份验证服务器提供的�
 
 参见 `full-text search`。
 
-### BLOB  
+**BLOB**
+
 一种SQL数据类型（`TINYBLOB`、`BLOB`、`MEDIUMBLOB`和`LONGBLOB`），用于包含任意大小的二进制数据对象。用于存储文档、图像、声音文件和其他不能轻易分解为MySQL表中的行和列的各种信息。在MySQL应用程序中处理BLOB的技术因每个`Connector`和`API`而异。`MySQL Connector/ODBC`将BLOB值定义为`LONGVARBINARY`。对于大型自由格式的字符数据集合，业界术语是`CLOB`，由MySQL的`TEXT`数据类型表示。
 
 参见 `API`, `CLOB`, `connector`, `Connector/ODBC`。
 
-### bottleneck  
+**bottleneck**
+
 系统中尺寸或容量受限的部分，限制整体吞吐量的部分。例如，内存区域可能小于所需大小；对单一必需资源的访问可能会阻止多个CPU内核同时运行；或等待磁盘I/O完成可能会阻止CPU充分运转。消除瓶颈往往可以提高并发性。例如，能够拥有多个`InnoDB`缓冲池实例可以减少多个会话同时读取和写入缓冲池时的竞争。
 
 参见 `buffer pool`, `concurrency`。
 
-### bounce  
+**bounce**
+
 关闭操作后立即重新启动。理想情况下，经过相对较短的预热期后，性能和吞吐量迅速恢复到较高水平。
 
 参见 `shutdown`。
 
-### buddy allocator  
+**buddy allocator**
+
 一种用于管理`InnoDB`缓冲池中不同大小页面的机制。
 
 参见 `buffer pool`, `page`, `page size`。
 
-### buffer  
+**buffer**
+
 用于临时存储的内存或磁盘区域。数据缓存在内存中，以便可以通过少量大型I/O操作而不是许多小型I/O操作高效地写入磁盘。数据缓存在磁盘上，以提高可靠性，即使在最糟糕的时间点发生崩溃或其他故障时，数据也可以恢复。`InnoDB`使用的主要缓冲区类型是缓冲池、双写缓冲区和更改缓冲区。
 
 参见 `buffer pool`, `change buffer`, `crash`, `doublewrite buffer`。
 
-### buffer pool  
+**buffer pool**
+
 一个保存`InnoDB`表和索引缓存数据的内存区域。为了提高大容量读取操作的效率，缓冲池被分为可以容纳多行的页面。为了提高缓存管理的效率，缓冲池实现为一个页面链表；使用`LRU`算法的变体将很少使用的数据从缓存中逐出。在具有大内存的系统上，您可以通过将缓冲池分为多个缓冲池实例来提高并发性。
 
 几个`InnoDB`状态变量、`INFORMATION_SCHEMA`表和`performance_schema`表有助于监控缓冲池的内部工作。从MySQL 5.6开始，您可以通过在服务器关闭时保存缓冲池状态，并在服务器启动时将缓冲池恢复到相同状态，来避免在重启服务器后经历较长的预热期，特别是对于具有大缓冲池的实例。参见[17.8.3.6节 “Saving and Restoring the Buffer Pool State”](https://dev.mysql.com/doc/refman/8.0/en/innodb-buffer-pool.html#innodb-buffer-pool-saving)。
 
 参见 `buffer pool instance`, `LRU`, `page`, `warm up`。
 
-### buffer pool instance  
-缓冲池可以分为的多个区域中的任意一个，由`innodb_buffer_pool_instances`配置选项控制。`innodb_buffer_pool_size`指定
+**buffer pool instance**
+
+缓冲池可以分为的多个区域中的任意一个，由`innodb_buffer_pool_instances`配置选项控制。`innodb_buffer_pool_size`指定的总内存大小在所有缓冲池实例之间划分。通常，具有多个缓冲池实例适用于为InnoDB缓冲池分配多个GB的系统，每个实例为1GB或更大。在系统从许多并发会话中加载或查找大量数据到缓冲池时，具有多个缓冲池实例可以减少对管理缓冲池的数据结构的排他访问的竞争。
+
+参见 buffer pool。
+
+**built-in**
+
+MySQL内置的InnoDB存储引擎是该存储引擎的原始发行形式。与InnoDB插件形成对比。从MySQL 5.5开始，InnoDB插件被重新合并到MySQL代码库中，成为内置的InnoDB存储引擎（称为InnoDB 1.1）。
+
+这个区别主要在MySQL 5.1中非常重要，因为某些特性或错误修复可能适用于InnoDB插件，但不适用于内置的InnoDB，反之亦然。
+
+参见 `InnoDB`。
+
+**business rules**
+
+构成商业软件基础的关系和动作顺序，用于运营商业公司。这些规则有时由法律规定，其他时候由公司政策决定。通过仔细规划，可以确保数据库编码和执行的关系，以及通过应用逻辑执行的动作，准确反映公司的实际政策并能处理现实生活中的情况。
+
+例如，员工离职可能会触发人力资源部门的一系列动作。人力资源数据库可能还需要灵活地表示已被录用但尚未开始工作的人员数据。关闭在线服务的账户可能会导致数据从数据库中删除，或者数据可能会被移动或标记，以便在账户重新开启时恢复。一家公司可能会建立关于工资的最大值、最小值和调整的政策，此外还包括基本的合理性检查，例如工资不能为负数。一个零售数据库可能不允许带有相同序列号的商品被退回超过一次，或者不允许特定信用卡购买超过某个金额，而一个用于检测欺诈的数据库可能会允许这些操作。
+
+参见 `relational`。
