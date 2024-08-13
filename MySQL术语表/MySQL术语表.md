@@ -2,6 +2,8 @@
 
 这些术语常用于MySQL数据库服务器的信息中。
 
+[TOC]
+
 ## A
 
 **.ARM 文件**
@@ -871,3 +873,62 @@ InnoDB的一种行格式。由于长可变长度列值存储在保存行数据�
 通过动态SQL创建和执行的准备好的语句。
 
 参见 `dynamic SQL`, `prepared statement`。
+
+## E
+
+**early adopter**
+
+类似于`beta`阶段，软件产品通常在非关键任务环境中进行性能、功能和兼容性评估的阶段。
+
+参见 `beta`。
+
+**Eiffel**
+
+一种编程语言，包含许多面向对象的特性。它的一些概念对Java和C#开发人员来说很熟悉。有关开源的Eiffel API for MySQL，请参见[31.13节 “MySQL Eiffel Wrapper”](https://dev.mysql.com/doc/connector-eiffel/en/connector-eiffel.html)。
+
+参见 `API`, `C#`, `Java`。
+
+**embedded**
+
+嵌入式MySQL服务器库（`libmysqld`）使得可以在客户端应用程序中运行功能齐全的MySQL服务器。主要优点是提高了嵌入式应用程序的速度和管理的简便性。
+
+参见 `client`, `libmysqld`。
+
+**error log**
+
+一种日志，显示关于MySQL启动、关键运行时错误和崩溃信息的内容。有关详细信息，请参见[7.4.2节 “The Error Log”](https://dev.mysql.com/doc/refman/8.0/en/error-log.html)。
+
+参见 `crash`, `log`。
+
+**eviction**
+
+将项目从缓存或其他临时存储区（如InnoDB缓冲池）中移除的过程。通常（但并非总是）使用`LRU`算法确定要移除的项目。当一个`dirty page`被驱逐时，其内容会被刷新到磁盘，任何脏的邻居页面也可能会被刷新。
+
+参见 `buffer pool`, `dirty page`, `flush`, `LRU`, `neighbor page`。
+
+**exception interceptor**
+
+一种用于跟踪、调试或增强数据库应用程序中遇到的SQL错误的拦截器类型。例如，拦截器代码可以发出`SHOW WARNINGS`语句以检索其他信息，并添加描述性文本，甚至更改返回给应用程序的异常类型。由于拦截器代码仅在SQL语句返回错误时调用，因此在正常（无错误）操作期间不会对应用程序造成任何性能损失。
+
+在使用`Connector/J`的Java应用程序中，设置此类拦截器涉及实现`com.mysql.jdbc.ExceptionInterceptor`接口，并在连接字符串中添加`exceptionInterceptors`属性。
+
+在使用`Connector/NET`的Visual Studio应用程序中，设置此类拦截器涉及定义一个继承自`BaseExceptionInterceptor`类的类，并将该类名指定为连接字符串的一部分。
+
+参见 `Connector/J`, `Connector/NET`, `interceptor`, `Java`, `Visual Studio`。
+
+**exclusive lock**
+
+一种锁，防止任何其他事务锁定同一行。根据事务隔离级别，这种锁可能会阻止其他事务写入同一行，或者也可能阻止其他事务读取同一行。InnoDB的默认隔离级别`REPEATABLE READ`通过允许事务读取具有排他锁的行来提高并发性，这种技术称为`consistent read`。
+
+参见 `concurrency`, `consistent read`, `isolation level`, `lock`, `REPEATABLE READ`, `shared lock`, `transaction`。
+
+**extent**
+
+表空间中的一组页面。对于默认页面大小16KB，一个`extent`包含64个页面。在MySQL 5.6中，InnoDB实例的页面大小可以为4KB、8KB或16KB，由`innodb_page_size`配置选项控制。对于4KB、8KB和16KB的页面大小，`extent`大小始终为1MB（或1048576字节）。
+
+MySQL 5.7.6中添加了对32KB和64KB InnoDB页面大小的支持。对于32KB页面大小，`extent`大小为2MB。对于64KB页面大小，`extent`大小为4MB。
+
+InnoDB的一些特性，如`segments`、预读请求和`doublewrite buffer`，使用一次读取、写入、分配或释放一个`extent`的I/O操作。
+
+参见 `doublewrite buffer`, `page`, `page size`, `read-ahead`, `segment`, `tablespace`。
+
