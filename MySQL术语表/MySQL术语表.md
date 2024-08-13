@@ -657,3 +657,217 @@ MySQL中表示SQL语句结果集的内部数据结构。通常与准备好的语
 尽管SQL通常会为您处理游标的处理，您在处理性能关键的代码时可能会深入研究其内部工作原理。
 
 参见 `dynamic SQL`, `prepared statement`, `query`。
+
+## D
+
+**data definition language**
+
+参见 `DDL`。
+
+**data dictionary**
+
+用于跟踪数据库对象（如表、索引和表列）的元数据。MySQL的数据字典在MySQL 8.0中引入，元数据物理上位于`mysql`数据库目录下的InnoDB每表独立表空间文件中。而InnoDB的数据字典元数据则物理上位于InnoDB系统表空间中。
+
+由于`MySQL Enterprise Backup`产品总是备份InnoDB系统表空间，因此所有备份都包含InnoDB数据字典的内容。
+
+参见 `column`, `file-per-table`, `.frm file`, `index`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `system tablespace`, `table`。
+
+**data directory**
+
+每个MySQL实例保存InnoDB数据文件和表示各个数据库的目录的目录。由`datadir`配置选项控制。
+
+参见 `data files`, `instance`。
+
+**data files**
+
+物理上包含表和索引数据的文件。
+
+InnoDB系统表空间包含InnoDB数据字典，并能够存储多个InnoDB表的数据，表示为一个或多个`.ibdata`数据文件。
+
+每表独立表空间，存储单个InnoDB表的数据，表示为一个`.ibd`数据文件。
+
+通用表空间（在MySQL 5.7.6中引入），可以存储多个InnoDB表的数据，也表示为一个`.ibd`数据文件。
+
+参见 `data dictionary`, `file-per-table`, `general tablespace`, `.ibd file`, `ibdata file`, `index`, `system tablespace`, `table`, `tablespace`。
+
+**data manipulation language**
+
+参见 `DML`。
+
+**data warehouse**
+
+主要运行大型查询的数据库系统或应用程序。只读或大多数为只读的数据可能以非规范化形式组织以提高查询效率。在MySQL 5.6及更高版本中，可以从只读事务的优化中受益。与OLTP形成对比。
+
+参见 `denormalized`, `OLTP`, `query`, `read-only transaction`。
+
+**database**
+
+在MySQL数据目录中，每个数据库由一个单独的目录表示。InnoDB系统表空间可以保存来自MySQL实例内多个数据库的表数据，并保存在位于各个数据库目录之外的数据文件中。当启用每表独立表空间模式时，表示各个InnoDB表的`.ibd`文件存储在数据库目录内，除非使用`DATA DIRECTORY`子句在其他位置创建。通用表空间（在MySQL 5.7.6中引入）也将表数据保存在`.ibd`文件中。与每表独立的`.ibd`文件不同，通用表空间`.ibd`文件可以保存来自MySQL实例内多个数据库的表数据，并且可以分配到相对于MySQL数据目录或独立于MySQL数据目录的目录中。
+
+对于长期使用MySQL的用户，数据库是一个熟悉的概念。对于来自Oracle数据库背景的用户，MySQL的数据库概念更接近Oracle数据库所称的模式（schema）。
+
+参见 `data files`, `file-per-table`, `.ibd file`, `instance`, `schema`, `system tablespace`。
+
+**DCL**
+
+数据控制语言，一组用于管理权限的SQL语句。在MySQL中，由`GRANT`和`REVOKE`语句组成。与`DDL`和`DML`形成对比。
+
+参见 `DDL`, `DML`, `SQL`。
+
+**DDEX provider**
+
+允许您使用Visual Studio中的数据设计工具操作MySQL数据库中的模式和对象的功能。对于使用`Connector/NET`的MySQL应用程序，`MySQL Visual Studio Plugin`作为DDEX提供程序，与MySQL 5.0及更高版本兼容。
+
+参见 `Visual Studio`。
+
+**DDL**
+
+数据定义语言，一组用于操作数据库本身而非单个表行的SQL语句。包括所有形式的`CREATE`、`ALTER`和`DROP`语句。还包括`TRUNCATE`语句，因为它的工作方式与`DELETE FROM table_name`语句不同，尽管最终效果类似。
+
+DDL语句自动提交当前事务；它们不能被回滚。
+
+InnoDB的在线DDL功能提高了`CREATE INDEX`、`DROP INDEX`和多种类型的`ALTER TABLE`操作的性能。有关更多信息，请参见[17.12节 “InnoDB and Online DDL”](https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl.html)。此外，InnoDB的每表独立设置可能会影响`DROP TABLE`和`TRUNCATE TABLE`操作的行为。
+
+与`DML`和`DCL`形成对比。
+
+参见 `commit`, `DCL`, `DML`, `file-per-table`, `rollback`, `SQL`, `transaction`。
+
+**deadlock**
+
+一种不同事务无法继续的情况，因为每个事务都持有对方所需的锁。由于两个事务都在等待资源变得可用，因此它们都不会释放其持有的锁。
+
+当事务以相反的顺序锁定多个表中的行（通过`UPDATE`或`SELECT ... FOR UPDATE`等语句）时，可能会发生死锁。当此类语句锁定索引记录和间隙的范围时，由于时间问题，也可能发生死锁。
+
+有关如何自动检测和处理死锁的背景信息，请参见[17.7.5.2节 “Deadlock Detection”](https://dev.mysql.com/doc/refman/8.0/en/innodb-deadlocks.html)。有关避免和恢复死锁条件的提示，请参见[17.7.5.3节 “How to Minimize and Handle Deadlocks”](https://dev.mysql.com/doc/refman/8.0/en/innodb-deadlocks-handling.html)。
+
+参见 `gap`, `lock`, `transaction`。
+
+**deadlock detection**
+
+一种自动检测死锁发生的机制，并自动回滚涉及的事务之一（牺牲者）。可以使用`innodb_deadlock_detect`配置选项禁用死锁检测。
+
+参见 `deadlock`, `rollback`, `transaction`, `victim`。
+
+**delete**
+
+当InnoDB处理`DELETE`语句时，行会立即标记为删除，并且不再通过查询返回。存储将在稍后通过称为清除操作的周期性垃圾回收过程中回收。对于删除大量数据，相关操作具有各自的性能特征，包括`TRUNCATE`和`DROP`。
+
+参见 `drop`, `purge`, `truncate`。
+
+**delete buffering**
+
+将`DELETE`操作产生的二级索引页面的更改存储在`change buffer`中，而不是立即写入更改，从而物理写入可以最小化随机I/O。（由于删除操作是一个两步过程，此操作会缓冲通常将索引记录标记为删除的写入。）这是更改缓冲的一种类型；其他类型包括`insert buffering`和`purge buffering`。
+
+参见 `change buffer`, `change buffering`, `insert buffer`, `insert buffering`, `purge buffering`。
+
+**denormalized**
+
+一种数据存储策略，在不同表中重复数据，而不是通过外键和连接查询链接表。通常用于数据仓库应用程序，其中数据在加载后不再更新。在此类应用程序中，查询性能比在更新期间保持一致性数据更重要。与规范化形成对比。
+
+参见 `data warehouse`, `foreign key`, `join`, `normalized`。
+
+**descending index**
+
+一种索引类型，优化索引存储以处理`ORDER BY column DESC`子句。
+
+参见 `index`。
+
+**dictionary object cache**
+
+字典对象缓存将以前访问过的数据字典对象存储在内存中，以便重用对象并最小化磁盘I/O。使用基于`LRU`的逐出策略，将最近最少使用的对象从内存中移除。缓存由多个分区组成，存储不同类型的对象。
+
+有关更多信息，请参见[16.4节 “Dictionary Object Cache”](https://dev.mysql.com/doc/refman/8.0/en/dictionary-object-cache.html)。
+
+参见 `data dictionary`, `LRU`。
+
+**dirty page**
+
+InnoDB `buffer pool`中的一个页面，该页面在内存中已被更新，但更改尚未写入（`flush`）到数据文件。与`clean page`相对。
+
+参见 `buffer pool`, `clean page`, `data files`, `flush`, `page`。
+
+**dirty read**
+
+一种检索不可靠数据的操作，即由其他事务更新但尚未提交的数据。这种操作仅在隔离级别为`READ UNCOMMITTED`时才可能。
+
+这种操作不符合数据库设计的ACID原则。它被认为非常危险，因为数据可能会被回滚，或在提交前进一步更新；然后，进行脏读的事务将使用从未确认为准确的数据。
+
+其对立面是`consistent read`，InnoDB确保事务不会读取由其他事务更新的信息，即使在此期间其他事务已提交。
+
+参见 `ACID`, `commit`, `consistent read`, `isolation level`, `READ UNCOMMITTED`, `rollback`。
+
+**disk-based**
+
+一种主要在磁盘存储（硬盘或等效设备）上组织数据的数据库。数据在磁盘和内存之间来回传输以进行操作。它与内存数据库相对。尽管InnoDB是基于磁盘的，但它也包含诸如`buffer pool`、多个`buffer pool instances`和`adaptive hash index`等功能，允许某些类型的工作负载主要从内存中运行。
+
+参见 `adaptive hash index`, `buffer pool`, `in-memory database`。
+
+**disk-bound**
+
+一种主要瓶颈是磁盘I/O的工作负载。（也称为I/O受限。）通常涉及频繁的磁盘写入，或随机读取的数据量超过`buffer pool`的容量。
+
+参见 `bottleneck`, `buffer pool`, `workload`。
+
+**DML**
+
+数据操作语言，一组用于执行`INSERT`、`UPDATE`和`DELETE`操作的SQL语句。`SELECT`语句有时被认为是`DML`语句，因为`SELECT ... FOR UPDATE`形式在锁定方面与`INSERT`、`UPDATE`和`DELETE`具有相同的考虑因素。
+
+InnoDB表的DML语句在事务上下文中操作，因此它们的效果可以作为单个单元提交或回滚。
+
+与`DDL`和`DCL`形成对比。
+
+参见 `commit`, `DCL`, `DDL`, `locking`, `rollback`, `SQL`, `transaction`。
+
+**document id**
+
+在InnoDB全文搜索功能中，表中包含`FULLTEXT`索引的特殊列，用于唯一标识与每个`ilist`值相关联的文档。其名称为`FTS_DOC_ID`（需要大写）。该列本身必须为`BIGINT UNSIGNED NOT NULL`类型，并具有名为`FTS_DOC_ID_INDEX`的唯一索引。最好在创建表时定义此列。如果InnoDB在创建`FULLTEXT`索引时必须将列添加到表中，索引操作将显著增加开销。
+
+参见 `full-text search`, `FULLTEXT index`, `ilist`。
+
+**doublewrite buffer**
+
+InnoDB使用一种称为`doublewrite`的文件刷新技术。在将页面写入数据文件之前，InnoDB首先将它们写入称为`doublewrite buffer`的存储区。只有在写入和刷新到`doublewrite buffer`完成后，InnoDB才会将页面写入到数据文件中的适当位置。如果在页面写入过程中发生操作系统、存储子系统或`mysqld`进程崩溃，InnoDB可以在崩溃恢复期间从`doublewrite buffer`中找到页面的良好副本。
+
+尽管数据始终被写入两次，但`doublewrite buffer`不需要两倍的I/O开销或两倍的I/O操作。数据以大块顺序写入缓冲区，并使用单个`fsync()`调用操作系统。
+
+参见 `crash recovery`, `data files`, `page`, `purge`。
+
+**drop**
+
+一种DDL操作，通过`DROP TABLE`或`DROP INDEX`等语句删除模式对象。它在内部映射为`ALTER TABLE`语句。从InnoDB的角度来看，这类操作的性能考虑涉及到锁定数据字典以确保所有相关对象都已更新的时间，以及更新内存结构（如`buffer pool`）的时间。对于表，删除操作与截断操作（`TRUNCATE TABLE`语句）具有略微不同的特性。
+
+参见 `buffer pool`, `data dictionary`, `DDL`, `table`, `truncate`。
+
+**DSN**
+
+“数据库源名称”的缩写。它是`Connector/ODBC`中连接信息的编码。有关详细信息，请参见[在Windows上配置Connector/ODBC DSN](https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-configuration-dsn.html)。它等同于`Connector/NET`使用的连接字符串。
+
+参见 `connection`, `connection string`, `Connector/NET`, `Connector/ODBC`。
+
+**dynamic cursor**
+
+ODBC支持的一种游标类型，可以在再次读取行时获取新的和更改后的结果。更改是否以及多快对游标可见，取决于所涉及的表类型（事务性或非事务性）和事务表的隔离级别。动态游标支持必须显式启用。
+
+参见 `cursor`, `ODBC`。
+
+**dynamic row format**
+
+InnoDB的一种行格式。由于长可变长度列值存储在保存行数据的页面之外，因此对于包含大对象的行非常有效。由于通常不访问大字段来评估查询条件，因此它们不会经常被加载到`buffer pool`中，从而减少了I/O操作并更好地利用了缓存内存。
+
+从MySQL 5.7.9开始，默认行格式由`innodb_default_row_format`定义，其默认值为`DYNAMIC`。
+
+有关InnoDB `DYNAMIC`行格式的更多信息，请参见[DYNAMIC Row Format](https://dev.mysql.com/doc/refman/8.0/en/innodb-row-format.html#innodb-row-format-dynamic)。
+
+参见 `buffer pool`, `file format`, `row format`。
+
+**dynamic SQL**
+
+一种功能，使您可以使用比将语句部分连接到字符串变量的简单方法更健壮、安全和高效的方法创建和执行准备好的语句。
+
+参见 `prepared statement`。
+
+**dynamic statement**
+
+通过动态SQL创建和执行的准备好的语句。
+
+参见 `dynamic SQL`, `prepared statement`。
