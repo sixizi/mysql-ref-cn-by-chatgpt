@@ -1154,54 +1154,62 @@ InnoDB索引数据结构中的一个位置，新值可以插入其中。当您�
 
 ## H
 
+**hash index**
 
-**hash index**  
 一种用于查询等值运算符（如`=`）而非范围运算符（如`>`或`BETWEEN`）的索引类型。可用于`MEMORY`表。尽管历史原因使得`MEMORY`表的默认索引是`hash index`，但该存储引擎也支持`B-tree`索引，后者通常是通用查询的更好选择。
 
 MySQL包括此类索引的变体——`adaptive hash index`，它在运行时条件允许时自动为`InnoDB`表构建。
 
 参见 `adaptive hash index`, `B-tree`, `index`, `InnoDB`。
 
-**HDD**  
+**HDD**
+
 “hard disk drive”（硬盘驱动器）的缩写。指使用旋转盘片的存储介质，通常在与`SSD`进行对比时使用。其性能特性会影响基于磁盘的工作负载的吞吐量。
 
 参见 `disk-based`, `SSD`。
 
-**heartbeat**  
+**heartbeat**
+
 用于指示系统正常运行的定期消息。在复制上下文中，如果`source`停止发送此类消息，则其中一个副本可以代替其位置。在集群环境中的服务器之间也可以使用类似技术，以确认它们都在正常运行。
 
 参见 `replication`, `source`。
 
-**high-water mark**  
+**high-water mark**
+
 表示上限的值，可以是在运行时不应超过的硬限制，也可以是实际达到的最大值的记录。与`low-water mark`形成对比。
 
 参见 `low-water mark`。
 
-**history list**  
+**history list**
+
 包含计划由InnoDB清除操作处理的标记为删除的记录的事务列表。记录在`undo log`中。`history list`的长度可通过`SHOW ENGINE INNODB STATUS`命令报告。如果`history list`的长度超过`innodb_max_purge_lag`配置选项的值，则每个DML操作会稍有延迟，以允许清除操作完成对删除记录的刷新。
 
 也称为`purge lag`。
 
 参见 `DML`, `flush`, `purge`, `purge lag`, `rollback segment`, `transaction`, `undo log`。
 
-**hole punching**  
+**hole punching**
+
 从页面中释放空块。InnoDB透明页面压缩功能依赖于`hole punching`支持。有关更多信息，请参见[17.9.2节 “InnoDB Page Compression”](https://dev.mysql.com/doc/refman/8.0/en/innodb-page-compression.html)。
 
 参见 `sparse file`, `transparent page compression`。
 
-**host**  
+**host**
+
 用于建立连接的数据库服务器的网络名称。通常与`port`一起指定。在某些情况下，IP地址`127.0.0.1`比特殊名称`localhost`更适合用于访问与应用程序位于同一服务器上的数据库。
 
 参见 `connection`, `localhost`, `port`。
 
-**hot**  
+**hot**
+
 行、表或内部数据结构被如此频繁地访问，以至于需要某种形式的锁定或互斥，从而导致性能或可扩展性问题的条件。
 
 尽管“hot”通常表示不理想的情况，但`hot backup`是一种首选的备份类型。
 
 参见 `hot backup`。
 
-**hot backup**  
+**hot backup**
+
 在数据库运行且应用程序正在读取和写入的情况下进行的备份。备份不仅仅是简单地复制数据文件：它必须包含在备份过程中插入或更新的任何数据；必须排除在备份过程中删除的任何数据；并且必须忽略任何未提交的更改。
 
 执行`hot backup`的Oracle产品特别适用于`InnoDB`表，但也支持`MyISAM`和其他存储引擎中的表，该产品称为`MySQL Enterprise Backup`。
