@@ -1062,40 +1062,46 @@ MySQL的一项功能，用于在表数据中查找单词、短语、布尔组合
 
 ## G
 
+**GA**
 
-**GA**  
 “Generally available”，指软件产品离开`beta`阶段并可供销售、官方支持和生产使用的阶段。
 
 参见 `beta`。
 
-**GAC**  
+**GAC**
+
 “Global Assembly Cache”的缩写。在.NET系统中用于存储库（`assemblies`）的中央区域。物理上由嵌套文件夹组成，由.NET CLR作为单个虚拟文件夹处理。
 
 参见 `.NET`, `assembly`。
 
-**gap**  
+**gap**
+
 InnoDB索引数据结构中的一个位置，新值可以插入其中。当您使用诸如`SELECT ... FOR UPDATE`之类的语句锁定一组行时，InnoDB可以创建适用于间隙以及索引中的实际值的锁。例如，如果选择所有大于10的值进行更新，间隙锁将阻止其他事务插入大于10的新值。`supremum record`和`infimum record`表示包含大于或小于所有当前索引值的所有值的间隙。
 
 参见 `concurrency`, `gap lock`, `index`, `infimum record`, `isolation level`, `supremum record`。
 
-**gap lock**  
+**gap lock**
+
 锁定索引记录之间的间隙，或者锁定第一条或最后一条索引记录之前或之后的间隙。例如，`SELECT c1 FROM t WHERE c1 BETWEEN 10 and 20 FOR UPDATE;`会阻止其他事务在列`t.c1`中插入值15，无论列中是否已经存在该值，因为锁定了范围内所有现有值之间的间隙。与`record lock`和`next-key lock`形成对比。
 
 间隙锁是性能与并发性之间权衡的一部分，在某些事务隔离级别中使用，而在其他级别中不使用。
 
 参见 `gap`, `infimum record`, `lock`, `next-key lock`, `record lock`, `supremum record`。
 
-**general log**  
+**general log**
+
 参见 `general query log`。
 
-**general query log**  
+**general query log**
+
 一种用于诊断和故障排除由MySQL服务器处理的SQL语句的日志。可以存储在文件或数据库表中。必须通过`general_log`配置选项启用此功能才能使用它。您可以通过`sql_log_off`配置选项禁用特定连接的此功能。
 
 记录的查询范围比慢查询日志更广。与用于复制的二进制日志不同，`general query log`包含`SELECT`语句并且不维护严格的排序。有关更多信息，请参见[7.4.3节 “The General Query Log”](https://dev.mysql.com/doc/refman/8.0/en/query-log.html)。
 
 参见 `binary log`, `log`, `slow query log`。
 
-**general tablespace**  
+**general tablespace**
+
 使用`CREATE TABLESPACE`语法创建的共享InnoDB表空间。`general tablespace`可以在MySQL数据目录之外创建，能够容纳多个表，并支持所有行格式的表。`general tablespace`在MySQL 5.7.6中引入。
 
 使用`CREATE TABLE tbl_name ... TABLESPACE [=] tablespace_name`或`ALTER TABLE tbl_name TABLESPACE [=] tablespace_name`语法将表添加到`general tablespace`中。
@@ -1106,34 +1112,42 @@ InnoDB索引数据结构中的一个位置，新值可以插入其中。当您�
 
 参见 `file-per-table`, `system tablespace`, `table`, `tablespace`。
 
-**generated column**  
+**generated column**
+
 其值由列定义中包含的表达式计算得出的列。生成列可以是虚拟列或存储列。
 
 参见 `base column`, `stored generated column`, `virtual generated column`。
 
-**generated stored column**  
+**generated stored column**
+
 参见 `stored generated column`。
 
-**generated virtual column**  
+**generated virtual column**
+
 参见 `virtual generated column`。
 
-**Glassfish**  
+**Glassfish**
+
 参见 `J2EE`。
 
-**global temporary tablespace**  
+**global temporary tablespace**
+
 一个存储用户创建的临时表的回滚段的临时表空间。
 
 参见 `temporary tablespace`。
 
-**global transaction**  
+**global transaction**
+
 涉及`XA`操作的一种事务。它由几个本身就是事务性的操作组成，但所有操作必须作为一个组成功完成，或者全部回滚。实质上，它将`ACID`属性扩展到多个`ACID`事务可以协同执行作为具有`ACID`属性的全局操作的组成部分。
 
 参见 `ACID`, `transaction`, `XA`。
 
-**group commit**  
+**group commit**
+
 一种InnoDB优化，针对一组提交操作执行一些底层I/O操作（日志写入），而不是为每个提交单独刷新和同步。
 
 参见 `binary log`, `commit`。
 
-**GUID**  
+**GUID**
+
 “globally unique identifier”的缩写，是一种ID值，可以用于跨不同数据库、语言、操作系统等关联数据。（作为使用顺序整数的替代方法，相同的值可能会出现在不同的表、数据库中，指代不同的数据。）旧版MySQL将其表示为`BINARY(16)`。当前，它表示为`CHAR(36)`。MySQL有一个`UUID()`函数返回字符格式的GUID值，一个`UUID_SHORT()`函数返回整数格式的GUID值。由于连续的GUID值不一定按升序排序，因此它不是用作大型InnoDB表主键的有效值。
