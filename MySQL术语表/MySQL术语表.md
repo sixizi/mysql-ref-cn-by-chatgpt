@@ -932,3 +932,130 @@ InnoDB的一些特性，如`segments`、预读请求和`doublewrite buffer`，�
 
 参见 `doublewrite buffer`, `page`, `page size`, `read-ahead`, `segment`, `tablespace`。
 
+## F
+
+**.frm file**
+
+包含MySQL表元数据（如表定义）的文件。.frm文件在MySQL 8.0中已被移除，但在早期的MySQL版本中仍然使用。在MySQL 8.0中，之前存储在.frm文件中的数据现在存储在数据字典表中。
+
+参见 `data dictionary`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `system tablespace`。
+
+**failover**
+
+在发生故障时自动切换到备用服务器的能力。在MySQL上下文中，failover涉及一个备用数据库服务器。通常在J2EE环境中由应用服务器或框架支持。
+
+参见 `Connector/J`, `J2EE`。
+
+**Fast Index Creation**
+
+最初在InnoDB插件中引入的一项功能，现在是MySQL 5.5及更高版本的一部分，通过避免完全重写关联表，加快了InnoDB二级索引的创建速度。该功能同样适用于删除二级索引的操作。
+
+由于索引维护会给许多数据传输操作带来性能开销，可以考虑在没有任何二级索引的情况下执行操作，如`ALTER TABLE ... ENGINE=INNODB`或`INSERT INTO ... SELECT * FROM ...`，然后再创建索引。
+
+在MySQL 5.6中，这项功能变得更加通用。您可以在创建索引时对表进行读写操作，并且许多类型的`ALTER TABLE`操作可以在不复制表的情况下执行，不会阻塞DML操作。因此，在MySQL 5.6及更高版本中，这组功能称为`online DDL`，而不是`Fast Index Creation`。
+
+有关更多信息，请参见[17.12节 “InnoDB and Online DDL”](https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl.html)。
+
+参见 `DML`, `index`, `online DDL`, `secondary index`。
+
+**fast shutdown**
+
+InnoDB的默认关闭过程，基于配置设置`innodb_fast_shutdown=1`。为了节省时间，某些`flush`操作会被跳过。这种关闭在正常使用期间是安全的，因为在下次启动时使用与崩溃恢复相同的机制执行这些`flush`操作。在数据库因升级或降级而关闭的情况下，应执行`slow shutdown`以确保在关闭期间将所有相关更改应用到数据文件中。
+
+参见 `crash recovery`, `data files`, `flush`, `shutdown`, `slow shutdown`。
+
+**file format**
+
+InnoDB表的文件格式。
+
+参见 `file-per-table`, `.ibd file`, `ibdata file`, `row format`。
+
+**file-per-table**
+
+受`innodb_file_per_table`选项控制的设置的通用名称，这是一个重要的配置选项，会影响InnoDB文件存储、功能可用性和I/O特性。从MySQL 5.6.7开始，默认启用`innodb_file_per_table`。
+
+启用`innodb_file_per_table`选项后，您可以将表创建在自己的.ibd文件中，而不是在系统表空间的共享ibdata文件中。当表数据存储在单个.ibd文件中时，您可以更灵活地选择所需的行格式，以支持如数据压缩等功能。`TRUNCATE TABLE`操作也更快，并且回收的空间可以由操作系统使用，而不是保留给InnoDB。
+
+对于存储在独立文件中的表，`MySQL Enterprise Backup`产品更灵活。例如，表可以从备份中排除，但前提是它们存储在单独的文件中。因此，此设置适用于不太频繁或在不同时间表上备份的表。
+
+参见 `compressed row format`, `compression`, `file format`, `.ibd file`, `ibdata file`, `innodb_file_per_table`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `row format`, `system tablespace`。
+
+**fill factor**
+
+在InnoDB索引中，页面被索引数据占用的比例，决定了页面在拆分前的填充程度。首次将索引数据分配到页面之间时的未使用空间允许在不需要昂贵的索引维护操作的情况下更新行中的较长字符串值。如果`fill factor`过低，索引将占用比实际需要更多的空间，从而在读取索引时产生额外的I/O开销。如果`fill factor`过高，任何增加列值长度的更新都可能导致索引维护的额外I/O开销。有关更多信息，请参见[17.6.2.2节 “The Physical Structure of an InnoDB Index”](https://dev.mysql.com/doc/refman/8.0/en/innodb-index-structure.html)。
+
+参见 `index`, `page`。
+
+**fixed row format**
+
+此行格式由MyISAM存储引擎使用，而不是InnoDB。如果您在MySQL 5.7.6或更早版本中使用`ROW_FORMAT=FIXED`创建InnoDB表，InnoDB将使用`compact row format`，尽管`FIXED`值可能仍会显示在诸如`SHOW TABLE STATUS`报告的输出中。从MySQL 5.7.7开始，如果指定了`ROW_FORMAT=FIXED`，InnoDB将返回错误。
+
+参见 `compact row format`, `row format`。
+
+**flush**
+
+将缓存在内存区域或临时磁盘存储区域中的更改写入数据库文件。InnoDB周期性刷新的存储结构包括`redo log`、`undo log`和`buffer pool`。
+
+`flush`操作可能因为内存区域已满且系统需要释放一些空间、提交操作意味着事务的更改可以最终确定，或`slow shutdown`操作意味着所有未完成的工作都应该最终完成。当不需要一次性刷新所有缓冲数据时，InnoDB可以使用一种称为`fuzzy checkpointing`的技术来刷新小批量页面，从而分散I/O开销。
+
+参见 `buffer pool`, `commit`, `fuzzy checkpointing`, `redo log`, `slow shutdown`, `undo log`。
+
+**flush list**
+
+InnoDB的一个内部数据结构，用于跟踪`buffer pool`中的`dirty pages`，即已更改且需要写回磁盘的页面。该数据结构由InnoDB内部的迷你事务频繁更新，因此通过其自身的互斥锁保护，以允许对`buffer pool`的并发访问。
+
+参见 `buffer pool`, `dirty page`, `LRU`, `mini-transaction`, `mutex`, `page`, `page cleaner`。
+
+**foreign key**
+
+一种在不同InnoDB表的行之间建立的指针关系。外键关系在父表和子表的一个列上定义。
+
+除了实现相关信息的快速查找外，外键还通过防止在插入、更新和删除数据时使这些指针无效，从而帮助强制执行引用完整性。这种强制机制是一种约束。如果相关外键值在另一个表中不存在，则无法插入指向另一个表的行。如果删除一行或更改其外键值，并且另一个表中的行指向该外键值，则可以设置外键以防止删除，使另一个表中的相应列值变为null，或自动删除另一个表中的相应行。
+
+设计规范化数据库的阶段之一是识别重复的数据，将这些数据分离到一个新表中，并设置外键关系，以便通过连接操作查询多个表如同单个表。
+
+参见 `child table`, `FOREIGN KEY constraint`, `join`, `normalized`, `NULL`, `parent table`, `referential integrity`, `relational`。
+
+**FOREIGN KEY constraint**
+
+通过外键关系维护数据库一致性的约束类型。与其他类型的约束一样，它可以防止数据插入或更新时变得不一致；在这种情况下，防止的数据不一致是表之间的数据不一致。或者，当执行DML操作时，外键约束可以根据创建外键时指定的`ON CASCADE`选项，导致子行中的数据被删除、更改为不同的值或设置为null。
+
+参见 `child table`, `constraint`, `DML`, `foreign key`, `NULL`。
+
+**FTS**
+
+在大多数情况下，是`full-text search`的缩写。在性能讨论中，有时是`full table scan`的缩写。
+
+参见 `full table scan`, `full-text search`。
+
+**full backup**
+
+包含MySQL数据库中所有表和每个MySQL实例中所有数据库的备份。与`partial backup`形成对比。
+
+参见 `backup`, `database`, `instance`, `partial backup`, `table`。
+
+**full table scan**
+
+一种操作，需要读取表的全部内容，而不仅仅是使用索引选择的部分。通常在小型查找表或数据仓库环境中对大型表执行此操作，在此环境中，所有可用数据都被聚合和分析。这些操作发生的频率以及表相对于可用内存的大小，对查询优化和管理`buffer pool`的算法有影响。
+
+索引的目的是允许在大表中查找特定值或值范围，从而在可行时避免全表扫描。
+
+参见 `buffer pool`, `index`。
+
+**full-text search**
+
+MySQL的一项功能，用于在表数据中查找单词、短语、布尔组合词等，速度更快、更方便、更灵活，比使用SQL `LIKE`运算符或编写自己的应用级搜索算法更高效。它使用SQL函数`MATCH()`和`FULLTEXT`索引。
+
+参见 `FULLTEXT index`。
+
+**FULLTEXT index**
+
+在MySQL全文搜索机制中保存搜索索引的特殊索引类型。表示列值中的单词，省略任何指定为停用词的单词。最初，仅适用于MyISAM表。从MySQL 5.6.4开始，它也可用于InnoDB表。
+
+参见 `full-text search`, `index`, `InnoDB`, `search index`, `stopword`。
+
+**fuzzy checkpointing**
+
+一种技术，将小批量的`dirty pages`从`buffer pool`中刷出，而不是一次性刷新所有脏页，以避免中断数据库处理。
+
+参见 `buffer pool`, `dirty page`, `flush`。
