@@ -1496,29 +1496,34 @@ SQL中的主要DML操作之一。插入操作的性能是加载数百万行数�
 
 ## J
 
+**J2EE**
 
-**J2EE**  
 `Java Platform, Enterprise Edition`：Oracle的企业级Java平台。它由一个API和一个企业级Java应用程序的运行环境组成。有关详细信息，请参见[Oracle Java EE概述](http://www.oracle.com/technetwork/java/javaee/overview/index.html)。在MySQL应用程序中，通常使用`Connector/J`进行数据库访问，使用`Tomcat`或`JBoss`等应用服务器处理中间层工作，并可选择使用`Spring`等框架。J2EE堆栈中通常提供的与数据库相关的功能包括连接池和故障转移支持。
 
 参见 `connection pool`, `Connector/J`, `failover`, `Java`, `JBoss`, `Spring`, `Tomcat`。
 
-**Java**  
+**Java**
+
 一种编程语言，结合了高性能、丰富的内置功能和数据类型、面向对象机制、广泛的标准库以及大量可重用的第三方模块。企业开发由许多框架、应用服务器和其他技术支持。其语法对C和C++开发者来说非常熟悉。要使用MySQL编写Java应用程序，可以使用称为`Connector/J`的JDBC驱动程序。
 
 参见 `C`, `Connector/J`, `C++`, `JDBC`。
 
-**JBoss**  
+**JBoss**
+
 参见 `J2EE`。
 
-**JDBC**  
+**JDBC**
+
 `Java Database Connectivity`的缩写，是一个用于从Java应用程序访问数据库的API。编写MySQL应用程序的Java开发人员使用`Connector/J`组件作为他们的JDBC驱动程序。
 
 参见 `API`, `Connector/J`, `J2EE`, `Java`。
 
-**JNDI**  
+**JNDI**
+
 参见 `Java`。
 
-**join**  
+**join**
+
 一种通过引用表中具有相同值的列从多个表中检索数据的查询。理想情况下，这些列是InnoDB外键关系的一部分，以确保参照完整性并对连接列建立索引。在规范化的数据设计中，通常通过用数字ID替换重复的字符串来节省空间并提高查询性能。
 
 参见 `foreign key`, `index`, `normalized`, `query`, `referential integrity`。
