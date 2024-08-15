@@ -1359,3 +1359,101 @@ InnoDB表总是有一个表示主键的聚簇索引。它们还可以在一个�
 `INFORMATION_SCHEMA`数据库还包含特定于InnoDB的表，这些表提供InnoDB数据字典的查询接口。您使用这些表不是为了查看数据库的结构，而是为了获取InnoDB表的实时信息，以帮助进行性能监控、调优和故障排除。
 
 参见 `data dictionary`, `database`, `InnoDB`。
+
+
+**InnoDB**  
+MySQL的一个组件，结合了高性能与事务能力，以确保可靠性、稳健性和并发访问。InnoDB体现了`ACID`设计哲学，作为一个存储引擎存在，处理使用`ENGINE=INNODB`子句创建或修改的表。有关架构细节和管理程序，请参见[第17章 InnoDB存储引擎](https://dev.mysql.com/doc/refman/8.0/en/innodb-storage-engine.html)，有关性能建议，请参见[10.5节 “Optimizing for InnoDB Tables”](https://dev.mysql.com/doc/refman/8.0/en/optimizing-innodb-tables.html)。
+
+在MySQL 5.5及更高版本中，InnoDB是新表的默认存储引擎，因此不需要`ENGINE=INNODB`子句。
+
+InnoDB表非常适合热备份。有关`MySQL Enterprise Backup`产品的信息，请参见[32.1节 “MySQL Enterprise Backup Overview”](https://dev.mysql.com/doc/mysql-enterprise-backup/en/mysql-enterprise-backup-overview.html)。
+
+参见 `ACID`, `hot backup`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `storage engine`, `transaction`。
+
+**innodb_autoinc_lock_mode**  
+`innodb_autoinc_lock_mode`选项控制自动增量锁定的算法。当您有一个自动增量的主键时，只能在设置`innodb_autoinc_lock_mode=1`时使用基于语句的复制。此设置称为连续锁定模式，因为事务内的多行插入操作将接收连续的自动增量值。如果设置为`innodb_autoinc_lock_mode=2`，它允许插入操作的更高并发性，请使用基于行的复制而非基于语句的复制。此设置称为交错锁定模式，因为同时运行的多个多行插入语句可以接收交错的自动增量值。`innodb_autoinc_lock_mode=0`的设置应仅用于兼容性目的。
+
+在MySQL 8.0.3之前，连续锁定模式（`innodb_autoinc_lock_mode=1`）是默认设置。从MySQL 8.0.3开始，交错锁定模式（`innodb_autoinc_lock_mode=2`）成为默认设置，这反映了默认复制类型从基于语句的复制转变为基于行的复制。
+
+参见 `auto-increment`, `auto-increment locking`, `mixed-mode insert`, `primary key`。
+
+**innodb_file_per_table**  
+一个重要的配置选项，影响InnoDB文件存储的许多方面、功能的可用性和I/O特性。从MySQL 5.6.7开始，默认启用。`innodb_file_per_table`选项开启`file-per-table`模式。启用此模式后，新创建的InnoDB表及其关联索引可以存储在系统表空间之外的`file-per-table` .ibd文件中。
+
+此选项影响许多SQL语句的性能和存储考虑因素，例如`DROP TABLE`和`TRUNCATE TABLE`。
+
+启用`innodb_file_per_table`选项后，您可以利用诸如表压缩和在`MySQL Enterprise Backup`中进行命名表备份等功能。
+
+有关更多信息，请参见[17.6.3.2节 “File-Per-Table Tablespaces”](https://dev.mysql.com/doc/refman/8.0/en/innodb-file-per-table-tablespaces.html)。
+
+参见 `compression`, `file-per-table`, `.ibd file`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `system tablespace`。
+
+**innodb_lock_wait_timeout**  
+`innodb_lock_wait_timeout`选项设置在等待共享资源可用与放弃并处理错误、重试或在应用程序中执行替代处理之间的平衡。当InnoDB事务等待超过指定时间以获取锁时，它会回滚该事务。如果更新由不同存储引擎控制的多个表导致死锁，此选项尤其有用；因为此类死锁不会自动检测。
+
+参见 `deadlock`, `deadlock detection`, `lock`, `wait`。
+
+**innodb_strict_mode**  
+`innodb_strict_mode`选项控制InnoDB是否在严格模式下操作，在此模式下，通常被视为警告的条件将导致错误（并且基础语句失败）。
+
+参见 `strict mode`。
+
+**Innovation Series**  
+具有相同主版本号的创新发布系列。例如，MySQL 8.1至8.3组成MySQL 8的创新系列。
+
+参见 `LTS Series`。
+
+**insert**  
+SQL中的主要DML操作之一。插入操作的性能是加载数百万行数据的`data warehouse`系统和可能同时有多个并发连接以任意顺序插入行的`OLTP`系统中的关键因素。如果插入性能对您很重要，您应该了解InnoDB的一些功能，例如在`change buffering`中使用的`insert buffer`和自动增量列。
+
+参见 `auto-increment`, `change buffering`, `data warehouse`, `DML`, `InnoDB`, `insert buffer`, `OLTP`, `SQL`。
+
+**insert buffer**  
+`change buffer`的旧名称。在MySQL 5.5中，增加了对`DELETE`和`UPDATE`操作的二级索引页更改的缓冲支持。以前，仅缓冲`INSERT`操作的更改。现在首选术语是`change buffer`。
+
+参见 `change buffer`, `change buffering`。
+
+**insert buffering**  
+将由`INSERT`操作引起的二级索引页的更改存储在`change buffer`中，而不是立即写入，从而最小化随机I/O操作。它是`change buffering`的一种类型；其他类型包括`delete buffering`和`purge buffering`。
+
+如果二级索引是唯一的，则不使用插入缓冲，因为在新条目写入前无法验证新值的唯一性。其他类型的`change buffering`适用于唯一索引。
+
+参见 `change buffer`, `change buffering`, `delete buffering`, `insert buffer`, `purge buffering`, `unique index`。
+
+**insert intention lock**  
+在插入行之前由`INSERT`操作设置的一种间隙锁。这种锁类型表示插入意图，以便在相同索引间隙中插入的多个事务无需等待彼此，只要它们不是在间隙内的相同位置插入。有关更多信息，请参见[17.7.1节 “InnoDB Locking”](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html)。
+
+参见 `gap lock`, `lock`, `next-key lock`。
+
+**instance**  
+一个管理数据目录的`mysqld`守护进程，表示一个或多个数据库及其一组表。在开发、测试和某些复制场景中，通常在同一服务器上运行多个实例，每个实例管理其自己的数据目录并监听其自己的端口或套接字。当一个实例运行磁盘密集型工作负载时，服务器可能仍有额外的CPU和内存容量来运行其他实例。
+
+参见 `data directory`, `database`, `disk-bound`, `mysqld`, `replication`, `server`, `table`。
+
+**instrumentation**  
+在源代码级别进行的修改，以收集性能数据以进行调优和调试。在MySQL中，通过`INFORMATION_SCHEMA`和`PERFORMANCE_SCHEMA`数据库使用SQL接口公开由`instrumentation`收集的数据。
+
+参见 `INFORMATION_SCHEMA`, `Performance Schema`。
+
+**intention exclusive lock**  
+参见 `intention lock`。
+
+**intention lock**  
+一种应用于表的锁，用于指示事务打算在表中的行上获取的锁类型。不同的事务可以在同一个表上获取不同类型的意图锁，但第一个在表上获取意图排它锁（`IX`）的事务会阻止其他事务在该表上获取任何S或X锁。相反，第一个在表上获取意图共享锁（`IS`）的事务会阻止其他事务在该表上获取任何X锁。两阶段过程允许按顺序解决锁请求，而不会阻止兼容的锁及相应操作。有关此锁机制的更多信息，请参见[17.7.1节 “InnoDB Locking”](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html)。
+
+参见 `lock`, `lock mode`, `locking`, `transaction`。
+
+**intention shared lock**  
+参见 `intention lock`。
+
+**interceptor**  
+用于对应用程序的某些方面进行检测或调试的代码，可以在不重新编译或更改应用程序源代码的情况下启用。
+
+参见 `command interceptor`, `Connector/J`, `Connector/NET`, `exception interceptor`。
+
+**intrinsic temporary table**  
+由优化器使用的优化的内部InnoDB临时表。
+
+参见 `optimizer`。
+
+**inverted
