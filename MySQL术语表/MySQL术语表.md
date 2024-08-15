@@ -1218,3 +1218,98 @@ MySQL包括此类索引的变体——`adaptive hash index`，它在运行时条
 
 参见 `apply`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `prepared backup`, `raw backup`。
 
+## I
+
+
+**.ibd file**  
+`file-per-table`表空间和`general tablespaces`的`data file`。`file-per-table`表空间中的.ibd文件包含单个表及其关联的索引数据。`general tablespace`中的.ibd文件可能包含多个表的表和索引数据。
+
+.ibd文件扩展名不适用于系统表空间，系统表空间由一个或多个ibdata文件组成。
+
+如果使用`DATA DIRECTORY =`子句创建`file-per-table`表空间或`general tablespace`，则.ibd文件位于指定路径下，位于常规数据目录之外。
+
+当`MySQL Enterprise Backup`产品在压缩备份中包含.ibd文件时，压缩后的等价文件为.ibz文件。
+
+参见 `database`, `file-per-table`, `general tablespace`, `ibdata file`, `.ibz file`, `innodb_file_per_table`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `system tablespace`。
+
+**.ibz file**  
+当`MySQL Enterprise Backup`产品执行压缩备份时，它将使用`file-per-table`设置创建的每个表空间文件从.ibd扩展名转换为.ibz扩展名。
+
+备份期间应用的压缩与在正常操作期间保持表数据压缩的压缩行格式不同。对于已经采用压缩行格式的表空间，压缩备份操作会跳过压缩步骤，因为二次压缩会减慢备份速度，但几乎没有空间节省。
+
+参见 `compressed backup`, `compressed row format`, `file-per-table`, `.ibd file`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `tablespace`。
+
+**I/O-bound**  
+参见 `disk-bound`。
+
+**ib-file set**  
+由InnoDB在MySQL数据库中管理的一组文件：系统表空间、`file-per-table`表空间文件和重做日志文件。根据MySQL版本和InnoDB配置，可能还包括`general tablespace`、`temporary tablespace`和`undo tablespace`文件。此术语有时用于深入讨论InnoDB文件结构和格式时，指代InnoDB在MySQL数据库中管理的一组文件。
+
+参见 `database`, `file-per-table`, `general tablespace`, `redo log`, `system tablespace`, `temporary tablespace`, `undo tablespace`。
+
+**ibbackup_logfile**  
+在执行`hot backup`操作期间，`MySQL Enterprise Backup`产品创建的一个补充备份文件。它包含在备份运行期间发生的任何数据更改信息。初始备份文件（包括ibbackup_logfile）被称为`raw backup`，因为备份操作期间发生的更改尚未合并。在对原始备份文件执行`apply`步骤后，生成的文件包含这些最终的数据更改，并被称为`prepared backup`。此阶段后，ibbackup_logfile文件不再需要。
+
+参见 `apply`, `hot backup`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `prepared backup`, `raw backup`。
+
+**ibdata file**  
+一组文件，命名为ibdata1、ibdata2等，构成InnoDB系统表空间。有关系统表空间ibdata文件中存储的结构和数据的信息，请参见[17.6.3.1节 “The System Tablespace”](https://dev.mysql.com/doc/refman/8.0/en/innodb-system-tablespace.html)。
+
+ibdata文件的增长受`innodb_autoextend_increment`配置选项的影响。
+
+参见 `change buffer`, `data dictionary`, `doublewrite buffer`, `file-per-table`, `.ibd file`, `innodb_file_per_table`, `system tablespace`, `undo log`。
+
+**ibtmp file**  
+用于非压缩InnoDB临时表及相关对象的InnoDB临时表空间数据文件。配置文件选项`innodb_temp_data_file_path`允许用户为临时表空间数据文件定义相对路径。如果未指定`innodb_temp_data_file_path`，默认行为是在数据目录中创建一个名为`ibtmp1`的自动扩展12MB数据文件，位于ibdata1旁边。
+
+参见 `data files`, `temporary table`, `temporary tablespace`。
+
+**ib_logfile**  
+一组文件，通常命名为ib_logfile0和ib_logfile1，形成重做日志。有时也称为日志组。这些文件记录试图更改InnoDB表数据的语句。这些语句在启动后会自动重放，以纠正未完成事务写入的数据。
+
+此数据不能用于手动恢复；对于这种操作，请使用二进制日志。
+
+参见 `binary log`, `log group`, `redo log`。
+
+**ilist**  
+在InnoDB全文索引中，由文档ID和标记（即特定单词）的位置信息组成的数据结构。
+
+参见 `FULLTEXT index`。
+
+**implicit row lock**  
+InnoDB为确保一致性而获取的行锁，您无需专门请求它。
+
+参见 `row lock`。
+
+**in-memory database**  
+一种数据库系统，将数据保存在内存中，以避免由于磁盘I/O和磁盘块与内存区域之间的转换带来的开销。一些内存数据库牺牲了`ACID`设计哲学中的“D”——持久性，因此易受硬件、电源和其他类型故障的影响，使它们更适合只读操作。其他内存数据库确实使用了持久性机制，例如将更改记录到磁盘或使用非易失性内存。
+
+MySQL中用于处理同类内存密集型操作的功能包括InnoDB缓冲池、自适应哈希索引、只读事务优化、MEMORY存储引擎、MyISAM键缓存和MySQL查询缓存。
+
+参见 `ACID`, `adaptive hash index`, `buffer pool`, `disk-based`, `read-only transaction`。
+
+**incremental backup**  
+一种`hot backup`，由`MySQL Enterprise Backup`产品执行，仅保存自某个时间点以来更改的数据。拥有一个完整备份和一系列增量备份可以让您在很长时间内重建备份数据，而无需保存多个完整备份所需的存储空间。您可以恢复完整备份，然后依次应用每个增量备份，也可以通过将每个增量备份应用到完整备份来保持完整备份的最新状态，然后执行一次恢复操作。
+
+更改数据的粒度在页面级别。一个页面实际上可能覆盖多行。每个更改的页面都包含在备份中。
+
+参见 `hot backup`, [MySQL Enterprise Backup](https://dev.mysql.com/doc/mysql-enterprise-backup), `page`。
+
+**index**  
+一种数据结构，为表的行提供快速查找功能，通常通过形成表示特定列或列集的所有值的树结构（B-tree）。
+
+InnoDB表总是有一个表示主键的聚簇索引。它们还可以在一个或多个列上定义一个或多个二级索引。根据结构，二级索引可以分为部分索引、列索引或复合索引。
+
+索引是查询性能的关键方面。数据库架构师设计表、查询和索引，以允许快速查找应用程序所需的数据。理想的数据库设计在可行的地方使用覆盖索引；查询结果完全由索引计算得出，而无需读取实际的表数据。每个外键约束也需要一个索引，以便有效地检查父表和子表中是否存在值。
+
+尽管B-tree索引是最常见的，但在MEMORY存储引擎和InnoDB自适应哈希索引中，哈希索引使用不同的数据结构。R-tree索引用于多维信息的空间索引。
+
+参见 `adaptive hash index`, `B-tree`, `child table`, `clustered index`, `column index`, `composite index`, `covering index`, `foreign key`, `hash index`, `parent table`, `partial index`, `primary key`, `query`, `R-tree`, `row`, `secondary index`, `table`。
+
+**index cache**  
+保存InnoDB全文搜索标记数据的内存区域。它缓冲数据以最小化在插入或更新包含`FULLTEXT`索引的列时的磁盘I/O。当索引缓存已满时，标记数据会被写入磁盘。每个InnoDB`FULLTEXT`索引都有其自己的独立索引缓存，其大小由配置选项`innodb_ft_cache_size`控制。
+
+参见 `full-text search`, `FULLTEXT index`。
+
+**index condition pushdown**  
+索引条件下推（ICP）是一种优化，如果WHERE条件的部分条件可以使用索引中的字段进行评估，则将条件的一部分下推到存储引擎。ICP可以减少存储引擎访问基表的次数以及MySQL服务器访问存储引擎的次数。有关更多信息，请参见[10.2.1.6节 “Index Condition Pushdown Optimization”](https://dev.mysql.com/doc/refman/8.0/en/index-condition-push
