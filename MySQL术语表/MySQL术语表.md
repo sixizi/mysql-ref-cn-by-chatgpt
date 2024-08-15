@@ -1904,16 +1904,18 @@ MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操�
 
 ## N
 
+**.NET**
 
-**.NET**  
 参见 `ADO.NET`, `ASP.net`, `Connector/NET`, `Mono`, `Visual Studio`。
 
-**native C API**  
+**native C API**
+
 `libmysqlclient`的同义词。
 
 参见 `libmysql`。
 
-**natural key**  
+**natural key**
+
 一种具有实际意义的索引列，通常作为主键。通常不建议使用自然键，原因如下：
 
 - 如果值发生变化，可能需要大量的索引维护以重新排序聚簇索引并更新每个二级索引中重复的主键值。
@@ -1923,24 +1925,28 @@ MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操�
 
 参见 `auto-increment`, `clustered index`, `primary key`, `secondary index`, `synthetic key`。
 
-**neighbor page**  
+**neighbor page**
+
 与特定页在同一`extent`中的任何页。当选择一个页进行刷出时，通常也会刷出任何脏的邻页，作为传统硬盘的I/O优化。在MySQL 5.6及更高版本中，此行为可以通过配置变量`innodb_flush_neighbors`进行控制；对于没有相同随机位置写入开销的`SSD`驱动器，您可能会关闭此设置。
 
 参见 `dirty page`, `extent`, `flush`, `page`。
 
-**next-key lock**  
+**next-key lock**
+
 一种锁，结合了索引记录上的记录锁和索引记录前的间隙锁。
 
 参见 `gap lock`, `locking`, `record lock`。
 
-**non-locking read**  
+**non-locking read**
+
 不使用`SELECT ... FOR UPDATE`或`SELECT ... LOCK IN SHARE MODE`子句的查询。它是只读事务中允许对全局表执行的唯一查询类型，是锁定读取的对立面。参见[17.7.2.3节 “Consistent Nonlocking Reads”](https://dev.mysql.com/doc/refman/8.0/en/innodb-consistent-read.html)。
 
 在MySQL 8.0.1中，`SELECT ... FOR SHARE`取代了`SELECT ... LOCK IN SHARE MODE`，但后者仍可用于向后兼容。
 
 参见 `locking read`, `query`, `read-only transaction`。
 
-**non-repeatable read**  
+**non-repeatable read**
+
 在查询检索数据后，同一事务中的后续查询检索应为相同的数据，但由于其他事务在此期间提交的更改，查询返回不同的结果。
 
 这种操作违反了数据库设计的`ACID`原则。在一个事务内，数据应该是一致的，并且关系应该是可预测和稳定的。
@@ -1949,12 +1955,14 @@ MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操�
 
 参见 `ACID`, `consistent read`, `isolation level`, `READ UNCOMMITTED`, `REPEATABLE READ`, `SERIALIZABLE`, `transaction`。
 
-**nonblocking I/O**  
+**nonblocking I/O**
+
 行业术语，与`asynchronous I/O`（异步I/O）同义。
 
 参见 `asynchronous I/O`。
 
-**normalized**  
+**normalized**
+
 一种数据库设计策略，通过将数据拆分为多个表并将重复值压缩为由ID表示的单行，避免存储、查询和更新冗余或冗长的值。通常用于`OLTP`应用程序。
 
 例如，可能为地址分配一个唯一ID，这样在人口普查数据库中可以通过将此ID与家庭中的每个成员关联来表示居住在此地址的关系，而不是存储如“123 Main Street, Anytown, USA”这样的复杂值的多个副本。
@@ -1965,17 +1973,20 @@ MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操�
 
 参见 `denormalized`, `foreign key`, `OLTP`, `relational`。
 
-**NoSQL**  
+**NoSQL**
+
 用于一组不以`SQL`语言作为主要数据读写机制的数据访问技术的广义术语。某些`NoSQL`技术仅作为键值存储，仅接受单值读取和写入；有些则放宽了`ACID`方法论的限制；还有一些不需要预先规划的模式。MySQL用户可以通过使用`memcached API`直接访问某些MySQL表，将`NoSQL`风格的处理速度和简单性与`SQL`操作的灵活性和便利性相结合。
 
 参见 `ACID`, `memcached`, `schema`, `SQL`。
 
-**NOT NULL constraint**  
+**NOT NULL constraint**
+
 一种约束，指定列不能包含任何`NULL`值。它有助于维护引用完整性，因为数据库服务器可以识别具有错误缺失值的数据。它还通过允许优化器预测索引中条目的数量，有助于查询优化中的算术运算。
 
 参见 `column`, `constraint`, `NULL`, `primary key`, `referential integrity`。
 
-**NULL**  
+**NULL**
+
 `SQL`中的一个特殊值，表示数据缺失。任何涉及`NULL`值的算术操作或相等性测试都会生成`NULL`结果。（因此它类似于IEEE浮点概念中的`NaN`，即“非数字”）。任何汇总计算（如`AVG()`）在确定除以的行数时会忽略具有`NULL`值的行。唯一可以与`NULL`值一起使用的测试是使用`SQL`惯用语`IS NULL`或`IS NOT NULL`。
 
 `NULL`值在索引操作中起到了一定作用，因为数据库必须尽量减少跟踪缺失数据值的开销。通常，`NULL`值不会存储在索引中，因为使用标准比较运算符测试索引列的查询永远不可能匹配具有`NULL`值的行。因此，唯一索引不会阻止`NULL`值；这些值根本不会在索引中表示。为列声明`NOT NULL constraint`提供了没有行被排除在索引之外的保证，从而允许更好的查询优化（准确计数行数并估算是否使用索引）。
