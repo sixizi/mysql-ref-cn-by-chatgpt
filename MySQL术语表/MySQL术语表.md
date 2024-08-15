@@ -1710,3 +1710,165 @@ InnoDB缓冲池表示为内存页的列表。当新页被访问并进入缓冲�
 注意：MySQL 8.0是一个在LTS发布模型之前的错误修复系列。
 
 参见 `Innovation Series`。
+
+## M
+
+
+**.MRG file**  
+包含对其他表引用的文件，由`MERGE`存储引擎使用。具有此扩展名的文件始终包含在由MySQL企业备份产品的`mysqlbackup`命令生成的备份中。
+
+参见 `MySQL Enterprise Backup`, `mysqlbackup command`。
+
+**.MYD file**  
+MySQL用于存储`MyISAM`表数据的文件。
+
+参见 `.MYI file`, `MySQL Enterprise Backup`, `mysqlbackup command`。
+
+**.MYI file**  
+MySQL用于存储`MyISAM`表索引的文件。
+
+参见 `.MYD file`, `MySQL Enterprise Backup`, `mysqlbackup command`。
+
+**master**  
+参见 `source`。
+
+**master thread**  
+InnoDB中的一个线程，执行各种后台任务。这些任务大多数与I/O相关，例如将`change buffer`中的更改写入相应的二级索引。
+
+为了提高并发性，有时操作会从`master thread`转移到单独的后台线程。例如，在MySQL 5.6及更高版本中，脏页由`page cleaner thread`而不是`master thread`从缓冲池中刷出。
+
+参见 `buffer pool`, `change buffer`, `concurrency`, `dirty page`, `flush`, `page cleaner`, `thread`。
+
+**MDL**  
+“metadata lock”（元数据锁）的缩写。
+
+参见 `metadata lock`。
+
+**medium trust**  
+“partial trust”（部分信任）的同义词。由于信任设置范围广泛，优先使用“部分信任”一词，以避免暗示只有三个级别（低、中和完全信任）。
+
+参见 `Connector/NET`, `partial trust`。
+
+**memcached**  
+许多MySQL和NoSQL软件栈中的一个流行组件，允许对单个值进行快速读写，并将结果完全缓存于内存中。传统上，应用程序需要额外的逻辑来将相同的数据写入MySQL数据库以进行永久存储，或者当数据尚未缓存于内存中时从MySQL数据库读取数据。现在，应用程序可以使用简单的`memcached`协议，借助许多语言的客户端库，直接与使用`InnoDB`或`NDB`表的MySQL服务器通信。这些NoSQL接口使得应用程序可以实现比直接发出SQL语句更高的读写性能，并简化了已经使用`memcached`进行内存缓存的系统的应用程序逻辑和部署配置。
+
+参见 `NoSQL`。
+
+**merge**  
+将缓存于内存中的数据进行合并，例如当某页被引入缓冲池时，将`change buffer`中记录的任何适用更改合并到缓冲池中的页。更新后的数据最终通过刷出机制写入表空间。
+
+参见 `buffer pool`, `change buffer`, `flush`, `tablespace`。
+
+**metadata lock**  
+一种锁，防止在另一个事务同时使用表时对其进行DDL操作。详情见[10.11.4节 “Metadata Locking”](https://dev.mysql.com/doc/refman/8.0/en/metadata-locking.html)。
+
+在线操作的增强功能，特别是在MySQL 5.6及更高版本中，专注于减少元数据锁定的数量。目标是在不更改表结构的DDL操作（例如InnoDB表的`CREATE INDEX`和`DROP INDEX`）在表被其他事务查询、更新等时仍能进行。
+
+参见 `DDL`, `lock`, `online`, `transaction`。
+
+**metrics counter**  
+在MySQL 5.6及更高版本中，由`INNODB_METRICS`表在`INFORMATION_SCHEMA`中实现的一个功能。您可以查询低级别InnoDB操作的计数和总数，并将结果与`Performance Schema`中的数据结合使用，以进行性能调优。
+
+参见 `counter`, `INFORMATION_SCHEMA`, `Performance Schema`。
+
+**midpoint insertion strategy**  
+一种技术，在InnoDB缓冲池中引入页时，不是将其放在列表的“最新”端，而是放在列表的中间某个位置。此点的确切位置可以根据`innodb_old_blocks_pct`选项的设置而变化。其目的是让只读一次的页，例如在全表扫描期间，可以比严格的`LRU`算法更快地从缓冲池中淘汰。有关更多信息，请参见[17.5.1节 “Buffer Pool”](https://dev.mysql.com/doc/refman/8.0/en/innodb-buffer-pool.html)。
+
+参见 `buffer pool`, `full table scan`, `LRU`, `page`。
+
+**mini-transaction**  
+InnoDB处理中的一个内部阶段，在DML操作期间对内部数据结构进行物理级别更改时发生。迷你事务（`mtr`）没有回滚的概念；在单个事务中可以发生多个迷你事务。迷你事务将信息写入重做日志，该信息在崩溃恢复期间使用。迷你事务也可以在常规事务之外发生，例如在后台线程进行清除处理时。
+
+参见 `commit`, `crash recovery`, `DML`, `physical`, `purge`, `redo log`, `rollback`, `transaction`。
+
+**mixed-mode insert**  
+一种`INSERT`语句，其中为某些但不是所有新行指定了自增值。例如，多值插入语句可能在某些情况下为自增列指定值，而在其他情况下为其指定`NULL`。InnoDB为列值指定为`NULL`的行生成自增值。另一个示例是`INSERT ... ON DUPLICATE KEY UPDATE`语句，在处理为更新而非插入的任何重复行时，可能生成但不使用自增值。
+
+在复制配置中，可能导致源服务器和副本服务器之间的一致性问题。可能需要调整`innodb_autoinc_lock_mode`配置选项的值。
+
+参见 `auto-increment`, `innodb_autoinc_lock_mode`, `replica`, `replication`, `source`。
+
+**MM.MySQL**  
+MySQL的一个较老的JDBC驱动程序，后来与MySQL产品整合为`Connector/J`。
+
+参见 `Connector/J`。
+
+**Mono**  
+由Novell开发的开源框架，适用于Linux平台上的`Connector/NET`和`C#`应用程序。
+
+参见 `Connector/NET`, `C#`。
+
+**mtr**  
+参见 `mini-transaction`。
+
+**multi-core**  
+一种处理器类型，能够利用多线程程序，如MySQL服务器。
+
+**multiversion concurrency control**  
+参见 `MVCC`。
+
+**mutex**  
+“`mutex variable`”（互斥变量）的非正式缩写。`mutex`本身是“`mutual exclusion`”（互斥）的缩写。InnoDB用于表示和强制执行对内部内存数据结构的独占访问锁的低级对象。一旦获取了锁，任何其他进程、线程等都无法获取相同的锁。与`rw-locks`（读写锁）相对，后者用于表示和强制执行对内部内存数据结构的共享访问锁。`mutexes`和`rw-locks`统称为`latches`。
+
+参见 `latch`, `lock`, `Performance Schema`, `Pthreads`, `rw-lock`。
+
+**MVCC**  
+`multiversion concurrency control`（多版本并发控制）的缩写。此技术允许具有特定隔离级别的InnoDB事务执行一致读取操作；即查询由其他事务更新的行，并查看这些更新发生之前的值。通过允许查询在不因其他事务持有的锁而等待的情况下继续执行，这是一种强大的并发性提升技术。
+
+这种技术在数据库领域并不普遍。某些其他数据库产品以及某些MySQL存储引擎不支持它。
+
+参见 `ACID`, `concurrency`, `consistent read`, `isolation level`, `lock`, `transaction`。
+
+**my.cnf**  
+在Unix或Linux系统上，MySQL选项文件的名称。
+
+参见 `my.ini`, `option file`。
+
+**my.ini**  
+在Windows系统上，MySQL选项文件的名称。
+
+参见 `my.cnf`, `option file`。
+
+**MyODBC drivers**  
+`Connector/ODBC`的旧名称。
+
+参见 `Connector/ODBC`。
+
+**mysql**  
+`mysql`程序是MySQL数据库的命令行解释器。它通过将请求传递给`mysqld`守护进程来处理SQL语句以及MySQL特定命令，例如`SHOW TABLES`。
+
+参见 `mysqld`, `SQL`。
+
+**MySQL Enterprise Backup**  
+一种授权产品，用于执行MySQL数据库的热备份。在备份`InnoDB`表时，它提供了最高的效率和灵活性，但也可以备份`MyISAM`和其他类型的表。
+
+参见 `hot backup`, `InnoDB`。
+
+**mysqlbackup command**  
+MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操作，并为`MyISAM`和其他类型的
+
+表执行暖备份操作。有关此命令的更多信息，请参见[32.1节 “MySQL Enterprise Backup Overview”](https://dev.mysql.com/doc/mysql-enterprise-backup/8.0/en/mysql-enterprise-backup.html)。
+
+参见 `hot backup`, `MySQL Enterprise Backup`, `warm backup`。
+
+**mysqlclient**  
+由文件`libmysqlclient`实现的库的非正式名称，扩展名为`.a`或`.so`。
+
+参见 `libmysqlclient`。
+
+**mysqld**  
+`mysqld`也称为MySQL服务器，是一个单一的多线程程序，在MySQL安装中执行大部分工作。它不产生额外的进程。MySQL服务器管理对包含数据库、表及其他信息（如日志文件和状态文件）的MySQL数据目录的访问。
+
+`mysqld`作为Unix守护进程或Windows服务运行，持续等待请求并在后台执行维护工作。
+
+参见 `instance`, `mysql`。
+
+**MySQLdb**  
+形成MySQL Python API基础的开源Python模块的名称。
+
+参见 `Python`, `Python API`。
+
+**mysqldump**  
+执行逻辑备份的命令，备份可以是数据库、表或表数据的任意组合。结果是SQL语句，可用于重新创建原始模式对象、数据或两者。如果是大量数据，物理备份解决方案（例如MySQL企业备份）速度更快，特别是在恢复操作方面。
+
+参见 `logical backup`, `MySQL Enterprise Backup`, `physical backup`, `restore`。
