@@ -1550,3 +1550,124 @@ SQL中的主要DML操作之一。插入操作的性能是加载数百万行数�
 对于MyISAM表，`KEY_BLOCK_SIZE`可选地指定用于索引键块的大小（以字节为单位）。此值被视为提示；如果需要，可以使用不同的大小。为单个索引定义指定的`KEY_BLOCK_SIZE`值会覆盖表级别的`KEY_BLOCK_SIZE`值。
 
 参见 `compressed row format`。
+
+## L
+
+
+**latch**  
+InnoDB使用的一种轻量级结构，用于实现对其内部内存结构的锁定，通常只保持几毫秒或微秒。`latch`是一个泛指术语，包括互斥锁（`mutex`，用于独占访问）和读写锁（`rw-lock`，用于共享访问）。某些`latch`是InnoDB性能调优的重点。可以通过`Performance Schema`接口获取有关`latch`使用和争用的统计信息。
+
+参见 `lock`, `locking`, `mutex`, `Performance Schema`, `rw-lock`。
+
+**libmysql**  
+`libmysqlclient`库的非正式名称。
+
+参见 `libmysqlclient`。
+
+**libmysqlclient**  
+库文件，名为`libmysqlclient.a`或`libmysqlclient.so`，通常链接到用C语言编写的客户端程序中。有时非正式地称为`libmysql`或`mysqlclient`库。
+
+参见 `client`, `libmysql`, `mysqlclient`。
+
+**libmysqld**  
+该嵌入式MySQL服务器库使得在客户端应用程序中运行一个完整功能的MySQL服务器成为可能。主要好处是提高了速度并简化了嵌入式应用程序的管理。您需要链接到`libmysqld`库，而不是`libmysqlclient`。这三个库的API是相同的。
+
+参见 `client`, `embedded`, `libmysql`, `libmysqlclient`。
+
+**lifecycle interceptor**  
+`Connector/J`支持的一种拦截器类型。它涉及实现接口`com.mysql.jdbc.ConnectionLifecycleInterceptor`。
+
+参见 `Connector/J`, `interceptor`。
+
+**list**  
+InnoDB缓冲池表示为内存页的列表。当新页被访问并进入缓冲池时，缓冲池中的页再次被访问并被视为更新页时，以及长时间未访问的页从缓冲池中被逐出时，该列表会重新排序。缓冲池被划分为子列表，替换策略是熟悉的`LRU`（最近最少使用）技术的变体。
+
+参见 `buffer pool`, `eviction`, `LRU`, `page`, `sublist`。
+
+**load balancing**  
+一种通过将查询请求发送到复制或集群配置中的不同从服务器来扩展只读连接的技术。在`Connector/J`中，负载均衡通过类`com.mysql.jdbc.ReplicationDriver`启用，并通过配置属性`loadBalanceStrategy`进行控制。
+
+参见 `Connector/J`, `J2EE`。
+
+**localhost**  
+参见 `connection`。
+
+**lock**  
+控制对资源（如表、行或内部数据结构）的访问的对象的高级概念，作为锁定策略的一部分。对于深入的性能调优，您可能需要研究实现锁的实际结构，如`mutex`和`latch`。
+
+参见 `latch`, `lock mode`, `locking`, `mutex`。
+
+**lock escalation**  
+某些数据库系统中使用的一种操作，将多个行锁转换为单个表锁，从而节省内存空间，但降低对表的并发访问能力。InnoDB使用空间效率高的行锁表示，因此不需要锁升级。
+
+参见 `locking`, `row lock`, `table lock`。
+
+**lock mode**  
+共享（`S`）锁允许事务读取一行。多个事务可以同时在同一行上获取`S`锁。
+
+排他（`X`）锁允许事务更新或删除一行。在同一时间内，其他任何事务都不能在同一行上获取任何种类的锁。
+
+意图锁适用于表，用于指示事务打算在表中的行上获取的锁类型。不同的事务可以在同一表上获取不同类型的意图锁，但第一个在表上获取意图排他锁（`IX`）的事务会阻止其他事务在该表上获取任何`S`或`X`锁。相反，第一个在表上获取意图共享锁（`IS`）的事务会阻止其他事务在该表上获取任何`X`锁。两阶段过程允许按顺序解决锁请求，而不会阻止兼容的锁及相应操作。
+
+参见 `intention lock`, `lock`, `locking`, `transaction`。
+
+**locking**  
+保护一个事务不被其他事务查看或更改正在查询或更改的数据的系统。锁定策略必须在数据库操作的可靠性和一致性（`ACID`哲学的原则）与良好并发性所需的性能之间找到平衡。锁定策略的微调通常涉及选择隔离级别并确保所有数据库操作在该隔离级别下是安全可靠的。
+
+参见 `ACID`, `concurrency`, `isolation level`, `locking`, `transaction`。
+
+**locking read**  
+在InnoDB表上执行锁定操作的`SELECT`语句。包括`SELECT ... FOR UPDATE`或`SELECT ... LOCK IN SHARE MODE`。它有可能产生死锁，具体取决于事务的隔离级别。与非锁定读取相反。不允许在只读事务中对全局表执行锁定读取。
+
+从MySQL 8.0.1开始，`SELECT ... FOR SHARE`替代了`SELECT ... LOCK IN SHARE MODE`，但后者仍然可用以保持向后兼容性。
+
+有关详细信息，请参见[17.7.2.4节 “Locking Reads”](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html)。
+
+参见 `deadlock`, `isolation level`, `locking`, `non-locking read`, `read-only transaction`。
+
+**log**  
+在InnoDB上下文中，`log`或`log files`通常指的是由`ib_logfileN`文件表示的重做日志。另一种InnoDB日志是`undo log`，它是一个存储区，用于保存活动事务修改的数据副本。
+
+在MySQL中，其他重要的日志包括`error log`（用于诊断启动和运行时问题）、`binary log`（用于复制和执行时间点恢复）、`general query log`（用于诊断应用程序问题）和`slow query log`（用于诊断性能问题）。
+
+参见 `binary log`, `error log`, `general query log`, `ib_logfile`, `redo log`, `slow query log`, `undo log`。
+
+**log buffer**  
+用于保存要写入组成重做日志的日志文件的数据的内存区域。它由`innodb_log_buffer_size`配置选项控制。
+
+参见 `log file`, `redo log`。
+
+**log file**  
+组成重做日志的`ib_logfileN`文件之一。数据从日志缓冲区内存区域写入这些文件。
+
+参见 `ib_logfile`, `log buffer`, `redo log`。
+
+**log group**  
+组成重做日志的一组文件，通常命名为`ib_logfile0`和`ib_logfile1`。（因此，有时统称为`ib_logfile`。）
+
+参见 `ib_logfile`, `redo log`。
+
+**logical**  
+涉及高级抽象方面的操作类型，例如表、查询、索引和其他SQL概念。通常，逻辑方面对于使数据库管理和应用程序开发方便和可用至关重要。与物理层相对。
+
+参见 `logical backup`, `physical`。
+
+**logical backup**  
+在不复制实际数据文件的情况下再现表结构和数据的备份。例如，`mysqldump`命令生成逻辑备份，因为其输出包含`CREATE TABLE`和`INSERT`语句，可以重新创建数据。与物理备份相对。逻辑备份提供灵活性（例如，可以在恢复之前编辑表定义或插入语句），但恢复时间可能比物理备份长得多。
+
+参见 `backup`, `mysqldump`, `physical backup`, `restore`。
+
+**loose_**  
+在服务器启动后添加到InnoDB配置选项的前缀，因此任何未被当前MySQL版本识别的新配置选项不会导致启动失败。MySQL处理以此前缀开头的配置选项，但如果前缀后的部分不是已识别的选项，则会发出警告而不是失败。
+
+参见 `startup`。
+
+**low-water mark**  
+表示下限的值，通常是指某种纠正行为开始或变得更积极的阈值。与高水位线相对。
+
+参见 `high-water mark`。
+
+**LRU**  
+`least recently used`的缩写，一种管理存储区域的常见方法。当需要缓存较新项目时，最近未使用的项目将被驱逐。InnoDB默认使用`LRU`机制管理缓冲池中的页，但在某些情况下会做例外，例如在全表扫描期间可能只读一次的页。此`LRU`算法的变体称为中点插入策略。有关更多信息，请参见[17.5.1节 “Buffer Pool”](https://dev.mysql.com/doc/refman/8.0/en/innodb-buffer-pool.html)。
+
+参见 `buffer pool`, `eviction`, `full table scan`, `midpoint insertion strategy`, `page`。
