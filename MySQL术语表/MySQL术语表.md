@@ -1527,3 +1527,26 @@ SQL中的主要DML操作之一。插入操作的性能是加载数百万行数�
 一种通过引用表中具有相同值的列从多个表中检索数据的查询。理想情况下，这些列是InnoDB外键关系的一部分，以确保参照完整性并对连接列建立索引。在规范化的数据设计中，通常通过用数字ID替换重复的字符串来节省空间并提高查询性能。
 
 参见 `foreign key`, `index`, `normalized`, `query`, `referential integrity`。
+
+## K
+
+**KDC**
+
+参见 `key distribution center`。
+
+**key distribution center**  
+在`Kerberos`中，密钥分发中心（`key distribution center`，KDC）由一个认证服务器（`authentication server`，AS）和一个票据授予服务器（`ticket-granting server`，TGS）组成。
+
+参见 `authentication server`, `ticket-granting ticket`。
+
+**keystore**
+
+参见 `SSL`。
+
+**KEY_BLOCK_SIZE**
+
+一个选项，用于指定使用压缩行格式的InnoDB表中数据页的大小。默认值为8KB。较低的值有可能会触发依赖于行大小和压缩比例的内部限制。
+
+对于MyISAM表，`KEY_BLOCK_SIZE`可选地指定用于索引键块的大小（以字节为单位）。此值被视为提示；如果需要，可以使用不同的大小。为单个索引定义指定的`KEY_BLOCK_SIZE`值会覆盖表级别的`KEY_BLOCK_SIZE`值。
+
+参见 `compressed row format`。
