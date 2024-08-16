@@ -2325,22 +2325,26 @@ InnoDB 进程内专用于执行周期性清除操作的线程。在 MySQL 5.6 �
 
 ## Q
 
-**query**  
+**query**
+
 在 SQL 中，指从一个或多个表中读取信息的操作。根据数据的组织方式和查询的参数，可以通过查阅索引来优化查找。如果涉及多个表，则查询称为联接（join）。
 
 由于历史原因，有时在讨论语句的内部处理时，“查询”一词被广泛使用，包括其他类型的 MySQL 语句，如 DDL 和 DML 语句。
 
 参见 `DDL`, `DML`, `index`, `join`, `SQL`, `table`。
 
-**query execution plan**  
+**query execution plan**
+
 由优化器关于如何最有效地执行查询所做的一系列决策，包括使用哪个或哪些索引以及连接表的顺序。计划稳定性（plan stability）意味着对于给定查询，优化器始终做出相同的选择。
 
 参见 `index`, `join`, `plan stability`, `query`。
 
-**query log**  
+**query log**
+
 参见 `general query log`。
 
-**quiesce**  
+**quiesce**
+
 减少数据库活动的量，通常是为执行诸如 ALTER TABLE、备份或关闭等操作做准备。可能涉及尽可能多地刷新数据，以便 InnoDB 不再继续进行后台 I/O 操作。
 
 在 MySQL 5.6 及更高版本中，语法 `FLUSH TABLES ... FOR EXPORT` 会将一些数据写入 InnoDB 表的磁盘，这使得通过复制数据文件来备份这些表变得更加简单。
