@@ -2360,21 +2360,25 @@ InnoDB 进程内专用于执行周期性清除操作的线程。在 MySQL 5.6 �
 参见 `B-tree`。
 
 **RAID**
+
 “Redundant Array of Inexpensive Drives”的缩写。通过将 I/O 操作分散到多个驱动器上，实现硬件层面的更高并发性，并提高低级写操作的效率，否则这些操作将按顺序执行。
 
 参见 `concurrency`。
 
 **random dive**
+
 一种快速估算列中不同值数量（列的基数）的技术。InnoDB 随机从索引中采样页面，并使用这些数据来估算不同值的数量。
 
 参见 `cardinality`。
 
 **raw backup**
+
 由 MySQL Enterprise Backup 产品生成的初始备份文件集，此时还未应用二进制日志和任何增量备份中反映的更改。在此阶段，文件尚未准备好恢复。在应用这些更改后，这些文件被称为已准备备份（prepared backup）。
 
 参见 `binary log`, `hot backup`, `ibbackup_logfile`, `incremental backup`, `MySQL Enterprise Backup`, `prepared backup`, `restore`。
 
 **READ COMMITTED**
+
 一种隔离级别，它使用放宽的锁定策略，在事务之间保护性能。事务不能看到其他事务未提交的数据，但可以看到其他事务在当前事务启动后提交的数据。因此，事务不会看到错误数据，但它看到的数据在某种程度上可能取决于其他事务的时间安排。
 
 当具有此隔离级别的事务执行 `UPDATE ... WHERE` 或 `DELETE ... WHERE` 操作时，其他事务可能需要等待。事务可以执行 `SELECT ... FOR UPDATE` 和 `LOCK IN SHARE MODE` 操作而不会让其他事务等待。
@@ -2384,41 +2388,49 @@ InnoDB 进程内专用于执行周期性清除操作的线程。在 MySQL 5.6 �
 参见 `ACID`, `isolation level`, `locking`, `REPEATABLE READ`, `SERIALIZABLE`, `transaction`。
 
 **read phenomena**
+
 在事务读取数据时，另一个事务已修改了这些数据，因此可能会发生的现象，如脏读、不可重复读和幻读。
 
 参见 `dirty read`, `non-repeatable read`, `phantom`。
 
 **READ UNCOMMITTED**
+
 提供事务之间最少保护的隔离级别。查询采用一种锁定策略，使其在通常情况下需要等待其他事务时能够继续执行。然而，这种额外的性能提升是以减少结果的可靠性为代价的，包括数据已被其他事务更改但尚未提交（即脏读）。请谨慎使用此隔离级别，注意到结果可能不一致或不可重现，具体取决于同时进行的其他事务。通常，具有此隔离级别的事务仅执行查询，而不执行插入、更新或删除操作。
 
 参见 `ACID`, `dirty read`, `isolation level`, `locking`, `transaction`。
 
 **read view**
+
 InnoDB 的 MVCC 机制使用的内部快照。某些事务根据其隔离级别，看到的数据值与事务（或在某些情况下，语句）开始时的数据一致。使用读取视图的隔离级别包括 `REPEATABLE READ`, `READ COMMITTED` 和 `READ UNCOMMITTED`。
 
 参见 `isolation level`, `MVCC`, `READ COMMITTED`, `READ UNCOMMITTED`, `REPEATABLE READ`, `transaction`。
 
 **read-ahead**
+
 一种 I/O 请求类型，异步预取一组页面（整个区间）到缓冲池中，以防这些页面很快会被需要。线性预读技术根据前一个区间页面的访问模式，预取一个区间的所有页面。随机预读技术一旦某个区间的某些页面进入缓冲池，就预取该区间的所有页面。随机预读在 MySQL 5.5 中不包含，但在 MySQL 5.6 中重新引入，并由配置选项 `innodb_random_read_ahead` 控制。
 
 参见 `buffer pool`, `extent`, `page`。
 
 **read-only transaction**
+
 一种针对 InnoDB 表的事务优化，通过消除为每个事务创建读取视图所涉及的一些记录管理。只能执行非锁定的读取查询。可以通过 `START TRANSACTION READ ONLY` 语法显式启动，或在某些条件下自动启动。详情请参阅[优化 InnoDB 只读事务](https://dev.mysql.com/doc/refman/8.0/en/innodb-performance-ro-tx.html)。
 
 参见 `non-locking read`, `read view`, `transaction`。
 
 **record lock**
+
 一种对索引记录的锁。例如，`SELECT c1 FROM t WHERE c1 = 10 FOR UPDATE;` 防止其他任何事务插入、更新或删除 t.c1 值为 10 的行。与 `gap lock` 和 `next-key lock` 对比。
 
 参见 `gap lock`, `lock`, `next-key lock`。
 
 **redo**
+
 在 DML 语句对 InnoDB 表进行更改时，记录在重做日志中的数据（以记录为单位）。在崩溃恢复期间，它用于修复由未完成的事务写入的数据。不断增加的 LSN 值表示已通过重做日志的数据的累积量。
 
 参见 `crash recovery`, `DML`, `LSN`, `redo log`, `transaction`。
 
 **redo log**
+
 一种基于磁盘的数据结构，在崩溃恢复期间用于修复未完成事务写入的数据。在正常操作期间，它编码请求以更改 InnoDB 表数据，这些请求由 SQL 语句或低级 API 调用产生。在意外关闭前未完成的数据文件更新会被自动重放。
 
 重做日志在磁盘上的物理表现形式为一组重做日志文件。重做日志数据按受影响的记录编码；这些数据统称为 `redo`。数据通过重做日志的传递由不断增加的 LSN 值表示。
@@ -2428,11 +2440,13 @@ InnoDB 的 MVCC 机制使用的内部快照。某些事务根据其隔离级别�
 参见 `crash recovery`, `data files`, `ib_logfile`, `log buffer`, `LSN`, `redo`, `shutdown`, `transaction`。
 
 **redo log archiving**
+
 当启用时，InnoDB 特性会将重做日志记录顺序写入存档文件，以避免备份工具在备份操作进行时未能跟上重做日志生成速度而导致的潜在数据丢失。详情请参见[重做日志归档](https://dev.mysql.com/doc/refman/8.0/en/innodb-redo-log-archiving.html)。
 
 参见 `redo log`。
 
 **redundant row format**
+
 InnoDB 最早的行格式。在 MySQL 5.0.3 之前，这是 InnoDB 唯一可用的行格式。从 MySQL 5.0.3 到 MySQL 5.7.8，默认行格式为 `COMPACT`。从 MySQL 5.7.9 起，默认行格式由 `innodb_default_row_format` 配置选项定义，默认设置为 `DYNAMIC`。为了与旧的 InnoDB 表兼容，仍然可以指定 `REDUNDANT` 行格式。
 
 详情参见[InnoDB 行格式](https://dev.mysql.com/doc/refman/8.0/en/innodb-row-formats.html)。
@@ -2440,11 +2454,13 @@ InnoDB 最早的行格式。在 MySQL 5.0.3 之前，这是 InnoDB 唯一可用�
 参见 `compact row format`, `dynamic row format`, `row format`。
 
 **referential integrity**
+
 维护数据始终保持一致格式的技术，属于 ACID 哲学的一部分。特别是，通过使用外键约束来保持不同表中的数据一致，这可以防止更改发生或将这些更改自动传播到所有相关表。相关机制包括防止重复值插入的唯一约束和防止错误插入空值的 `NOT NULL` 约束。
 
 参见 `ACID`, `FOREIGN KEY constraint`, `NOT NULL constraint`, `unique constraint`。
 
 **relational**
+
 现代数据库系统的重要方面。数据库服务器编码并执行关系，如一对一、一对多、多对一和唯一性。例如，在一个地址数据库中，一个人可能有零个、一个或多个电话号码；一个电话号码可能与几个家庭成员相关联。在金融数据库中，一个人可能需要恰好一个纳税人 ID，并且任何纳税人 ID 只能与一个人相关联。
 
 数据库服务器可以使用这些关系来防止插入错误数据，并找到查找信息的有效方法。例如，如果一个值被声明为唯一的，服务器可以在找到第一个匹配项时停止搜索，并且它可以拒绝尝试插入该值的第二个副本。
@@ -2456,11 +2472,13 @@ InnoDB 最早的行格式。在 MySQL 5.0.3 之前，这是 InnoDB 唯一可用�
 参见 `ACID`, `column`, `constraint`, `foreign key`, `normalized`。
 
 **relevance**
+
 在全文检索功能中，表示搜索字符串与 `FULLTEXT` 索引中数据相似性的数字。例如，当你搜索一个单词时，该单词在文本中出现多次的行通常比仅出现一次的行更相关。
 
 参见 `full-text search`, `FULLTEXT index`。
 
 **REPEATABLE READ**
+
 InnoDB 的默认隔离级别。它防止被查询的行被其他事务更改，从而阻止不可重复读，但不阻止幻读。它使用中等严格的锁定策略，使事务中的所有查询看到相同的快照，即事务开始时的数据。
 
 当具有此隔离级别的事务执行 `UPDATE ... WHERE`, `DELETE ... WHERE`, `SELECT ... FOR UPDATE` 和 `LOCK IN SHARE MODE` 操作时，其他事务可能需要等待。
@@ -2470,9 +2488,11 @@ InnoDB 的默认隔离级别。它防止被查询的行被其他事务更改，�
 参见 `ACID`, `consistent read`, `isolation level`, `locking`, `phantom`, `transaction`。
 
 **repertoire**
+
 适用于字符集的术语。字符集的 Repertoire 是该集合中的字符集。参见[字符集 Repertoire](https://dev.mysql.com/doc/refman/8.0/en/charset-repertoire.html)。
 
 **replica**
+
 在复制拓扑中接收来自另一台服务器（源）的更改并应用这些相同更改的数据库服务器机器。因此，它与源保持相同的内容，尽管可能稍有滞后。
 
 在 MySQL 中，副本通常用于灾难恢复，以取代发生故障的源。它们还常用于测试软件升级和新设置，以确保数据库配置更改不会导致性能或可靠性问题。
@@ -2482,16 +2502,19 @@ InnoDB 的默认隔离级别。它防止被查询的行被其他事务更改，�
 参见 `DML`, `replication`, `server`, `source`, `SSD`。
 
 **replication**
+
 将更改从源发送到一个或多个副本，以便所有数据库具有相同的数据。这种技术有广泛的用途，例如负载平衡以提高可扩展性、灾难恢复以及测试软件升级和配置更改。可以通过称为行级复制和语句级复制的方法在数据库之间发送更改。
 
 参见 `replica`, `row-based replication`, `source`, `statement-based replication`。
 
 **restore**
+
 将 MySQL Enterprise Backup 产品生成的备份文件集放置到 MySQL 中以供使用的过程。此操作可以用于修复损坏的数据库、恢复到某个较早的时间点，或在复制上下文中设置新的副本。在 MySQL Enterprise Backup 产品中，此操作由 `mysqlbackup` 命令的 `copy-back` 选项执行。
 
 参见 `hot backup`, `MySQL Enterprise Backup`, `mysqlbackup command`, `prepared backup`, `replica`, `replication`。
 
 **rollback**
+
 一种 SQL 语句，用于结束事务并撤消该事务所做的任何更改。它与 `commit` 相反，`commit` 使事务中的任何更改永久生效。
 
 默认情况下，MySQL 使用自动提交设置，该设置在每个 SQL 语句后自动发出 `commit`。你必须更改此设置才能使用回滚技术。
@@ -2499,11 +2522,13 @@ InnoDB 的默认隔离级别。它防止被查询的行被其他事务更改，�
 参见 `ACID`, `autocommit`, `commit`, `SQL`, `transaction`。
 
 **rollback segment**
+
 包含 `undo` 日志的存储区域。回滚段传统上位于系统表空间中。从 MySQL 5.6 开始，回滚段可以位于 `undo` 表空间中。从 MySQL 5.7 开始，回滚段也分配给全局临时表空间。
 
 参见 `global temporary tablespace`, `system tablespace`, `undo log`, `undo tablespace`。
 
 **row**
+
 由一组列定义的逻辑数据结构。一组行构成一个表。在 InnoDB 数据文件中，每个页面可以包含一行或多行。
 
 尽管 InnoDB 使用“行格式”一词与 MySQL 语法保持一致，但行格式是每个表的属性，适用于该表中的所有行。
@@ -2511,6 +2536,7 @@ InnoDB 的默认隔离级别。它防止被查询的行被其他事务更改，�
 参见 `column`, `data files`, `page`, `row format`, `table`。
 
 **row format**
+
 InnoDB 表的行的磁盘存储格式。随着 InnoDB 获得新的功能（例如压缩），引入了新的行格式以支持由此带来的存储效率和性能改进。
 
 InnoDB 表的行格式由 `ROW_FORMAT` 选项或 `innodb_default_row_format` 配置选项（在 MySQL 5.7.9 中引入）指定。行格式包括 `REDUNDANT`, `COMPACT`, `COMPRESSED` 和 `DYNAMIC`。要查看 InnoDB 表的行格式，请发出 `SHOW TABLE STATUS` 语句或查询 INFORMATION_SCHEMA 中的 InnoDB 表元数据。
@@ -2518,6 +2544,7 @@ InnoDB 表的行格式由 `ROW_FORMAT` 选项或 `innodb_default_row_format` 配
 参见 `compact row format`, `compressed row format`, `compression`, `dynamic row format`, `redundant row format`, `row`, `table`。
 
 **row lock**
+
 防止其他事务以不兼容的方式访问某行的锁。同一表中的其他行可以由其他事务自由写入。这是对 InnoDB 表执行 DML 操作时的锁定类型。
 
 与 MyISAM 使用的表锁或在线 DDL 无法完成的 InnoDB 表 DDL 操作期间使用的表锁对比；这些锁会阻止并发访问表。
@@ -2525,26 +2552,31 @@ InnoDB 表的行格式由 `ROW_FORMAT` 选项或 `innodb_default_row_format` 配
 参见 `DDL`, `DML`, `InnoDB`, `lock`, `locking`, `online DDL`, `table lock`, `transaction`。
 
 **row-based replication**
+
 一种复制形式，其中事件从源传播，指定如何更改副本上的各个行。对于所有设置的 `innodb_autoinc_lock_mode` 选项都是安全的。
 
 参见 `auto-increment locking`, `innodb_autoinc_lock_mode`, `replica`, `replication`, `source`, `statement-based replication`。
 
 **row-level locking**
+
 InnoDB 表使用的锁定机制，依赖于行锁而不是表锁。多个事务可以同时修改同一个表。只有当两个事务试图修改同一行时，其中一个事务才会等待另一个事务完成（并释放其行锁）。
 
 参见 `InnoDB`, `locking`, `row lock`, `table lock`, `transaction`。
 
 **Ruby**
+
 一种强调动态类型和面向对象编程的编程语言。一些语法对 Perl 开发人员来说很熟悉。
 
 参见 `API`, `Perl`, `Ruby API`。
 
 **Ruby API**
+
 基于 `libmysqlclient` API 库的 `mysql2` 可用于为 Ruby 程序员开发 MySQL 应用程序。详情参见[MySQL Ruby API](https://dev.mysql.com/doc/refman/8.0/en/apis-ruby.html)。
 
 参见 `libmysql`, `Ruby`。
 
 **rw-lock**
+
 InnoDB 用于表示和执行对内部内存数据结构的共享访问锁的低级对象，与表示和执行对内部内存数据结构的独占访问锁的互斥量对比。互斥量和 rw-lock 统称为闩锁（latches）。
 
 rw-lock 类型包括 s-lock（共享锁）, x-lock（独占锁）和 sx-lock（共享-独占锁）。
@@ -2557,8 +2589,10 @@ sx-lock 允许对公共资源进行写访问，同时允许其他线程进行不
 
 以下矩阵总结了 rw-lock 类型的兼容性。
 
-S | SX | X
-S | Compatible | Compatible | Conflict
-SX | Compatible | Conflict | Conflict
-X | Conflict | Conflict | Conflict
+|   | S | SX | X |
+|---|---|---|---|
+| **S**  | Compatible | Compatible | Conflict |
+| **SX** | Compatible | Conflict   | Conflict |
+| **X**  | Conflict   | Conflict   | Conflict |
+
 参见 `latch`, `lock`, `mutex`, `Performance Schema`。
