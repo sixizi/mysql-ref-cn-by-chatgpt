@@ -2081,15 +2081,16 @@ MySQL 的配置参数，可以存储在配置文件中或通过命令行传递�
 
 ## P
 
+**.par file**
 
-**.par file**  
 包含分区定义的文件。在由 MySQL Enterprise Backup 产品的 `mysqlbackup` 命令生成的备份中，会包含具有此扩展名的文件。
 
 自 MySQL 5.7.6 引入对 InnoDB 表的原生分区支持后，不再为分区 InnoDB 表创建 `.par` 文件。在 MySQL 5.7 中，分区 MyISAM 表仍使用 `.par` 文件。在 MySQL 8.0 中，分区支持仅由 InnoDB 存储引擎提供，因此从 MySQL 8.0 开始，不再使用 `.par` 文件。
 
 参见 `MySQL Enterprise Backup`, `mysqlbackup command`。
 
-**page**  
+**page**
+
 表示 InnoDB 在任何时候在磁盘（数据文件）和内存（缓冲池）之间传输的数据量的单位。一个页可以包含一行或多行，具体取决于每行中的数据量。如果一行无法完全放入单个页中，InnoDB 会设置额外的指针式数据结构，以便在一个页中存储关于该行的信息。
 
 一种在每页中容纳更多数据的方法是使用压缩行格式。对于使用 BLOB 或大文本字段的表，紧凑行格式允许将这些大列与行的其余部分分开存储，从而减少 I/O 开销并减少对不引用这些列的查询的内存使用。
@@ -2100,12 +2101,14 @@ MySQL 的配置参数，可以存储在配置文件中或通过命令行传递�
 
 参见 `buffer pool`, `compact row format`, `compressed row format`, `data files`, `extent`, `page size`, `row`。
 
-**page cleaner**  
+**page cleaner**
+
 一个 InnoDB 后台线程，用于从缓冲池中刷新脏页。在 MySQL 5.6 之前，此活动由主线程执行。页清理线程的数量由在 MySQL 5.7.4 中引入的配置选项 `innodb_page_cleaners` 控制。
 
 参见 `buffer pool`, `dirty page`, `flush`, `master thread`, `thread`。
 
-**page size**  
+**page size**
+
 在 MySQL 5.5 及以前的版本中，每个 InnoDB 页的大小固定为 16 KB。这一值代表了平衡：足够大以容纳大多数行的数据，同时足够小以尽量减少将不需要的数据传输到内存的性能开销。不支持其他值。
 
 从 MySQL 5.6 开始，InnoDB 实例的页大小可以为 4KB、8KB 或 16KB，由 `innodb_page_size` 配置选项控制。从 MySQL 5.7.6 开始，InnoDB 还支持 32KB 和 64KB 页大小。对于 32KB 和 64KB 页大小，不支持 `ROW_FORMAT=COMPRESSED`，且最大记录大小为 16KB。
@@ -2116,54 +2119,64 @@ MySQL 的配置参数，可以存储在配置文件中或通过命令行传递�
 
 参见 `disk-bound`, `file-per-table`, `general tablespace`, `instance`, `OLTP`, `page`, `SSD`, `system tablespace`, `tablespace`。
 
-**parent table**  
+**parent table**
+
 在外键关系中，持有初始列值的表，这些值来自子表的引用。根据外键定义中的 `ON UPDATE` 和 `ON DELETE` 子句，对父表中行的删除或更新的后果有所不同。子表中具有相应值的行可能会自动被删除或更新，或这些列可能会被设置为 `NULL`，或者操作可能会被阻止。
 
 参见 `child table`, `foreign key`。
 
-**partial backup**  
+**partial backup**
+
 包含 MySQL 数据库中部分表或 MySQL 实例中部分数据库的备份。与完全备份形成对比。
 
 参见 `backup`, `full backup`, `table`。
 
-**partial index**  
+**partial index**
+
 仅表示部分列值的索引，通常是长 `VARCHAR` 值的前 N 个字符（前缀）。
 
 参见 `index`, `index prefix`。
 
-**partial trust**  
+**partial trust**
+
 托管服务提供商通常使用的执行环境，其中应用程序具有某些权限但没有其他权限。例如，应用程序可能能够通过网络访问数据库服务器，但在读取和写入本地文件方面处于“沙盒”环境中。
 
 参见 `Connector/NET`。
 
-**Performance Schema**  
+**Performance Schema**
+
 MySQL 5.5 及更高版本中的 `performance_schema` 模式，提供了一组可以查询的表，用以获取有关 MySQL 服务器内部许多部分性能特征的详细信息。参见 [第 29 章, “MySQL Performance Schema”](https://dev.mysql.com/doc/refman/8.0/en/performance-schema.html)。
 
 参见 `INFORMATION_SCHEMA`, `latch`, `mutex`, `rw-lock`。
 
-**Perl**  
+**Perl**
+
 一种编程语言，起源于 Unix 脚本和报告生成。结合了高性能正则表达式和文件 I/O。通过类似 `CPAN` 的仓库可以获取大量可重用模块。
 
 参见 `Perl API`。
 
-**Perl API**  
+**Perl API**
+
 一种用于编写 Perl 语言的 MySQL 应用程序的开源 API。通过 `DBI` 和 `DBD::mysql` 模块实现。详情请参见[31.9节 “MySQL Perl API”](https://dev.mysql.com/doc/refman/8.0/en/apis-interfaces.html)。
 
 参见 `API`, `Perl`。
 
-**persistent statistics**  
+**persistent statistics**
+
 一种将 InnoDB 表的索引统计信息存储在磁盘上的功能，从而为查询提供更好的计划稳定性。详情请参见[17.8.10.1节 “配置持久化优化器统计参数”](https://dev.mysql.com/doc/refman/8.0/en/innodb-persistent-stats.html)。
 
 参见 `index`, `optimizer`, `plan stability`, `query`, `table`。
 
-**pessimistic**  
+**pessimistic**
+
 一种为了安全性而牺牲性能或并发性的策略。当大比例的请求或尝试可能会失败，或失败请求的后果严重时，这种策略是合适的。`InnoDB` 使用称为悲观锁定的策略，以最大限度地减少死锁的可能性。在应用程序级别，您可以通过在事务开始时获得所需的所有锁来避免死锁。
 
 许多内置的数据库机制使用相反的乐观策略。
 
 参见 `deadlock`, `locking`, `optimistic`。
 
-**phantom**  
+**phantom**
+
 在查询结果集中出现的行，但不在早期查询的结果集中。例如，如果在事务内运行两次查询，而在此期间，另一个事务在插入新行或更新行后提交，以使其与查询的 `WHERE` 子句匹配。
 
 这种现象称为幻读。比不可重复读更难防范，因为锁定第一次查询结果集中的所有行并不能阻止导致幻影出现的更改。
@@ -2172,7 +2185,8 @@ MySQL 5.5 及更高版本中的 `performance_schema` 模式，提供了一组可
 
 参见 `consistent read`, `isolation level`, `non-repeatable read`, `READ UNCOMMITTED`, `REPEATABLE READ`, `SERIALIZABLE`, `transaction`。
 
-**PHP**  
+**PHP**
+
 一种起源于 web 应用程序的编程语言。代码通常作为块嵌入到网页源代码中，并在网页由 web 服务器传输时将输出替换到页面中。这与生成整个网页的应用程序（如 `CGI` 脚本）形成对比。`PHP` 编码风格用于高度交互和动态的网页。现代 `PHP` 程序也可以作为命令行或 `GUI` 应用程序运行。
 
 MySQL 应用程序使用 `PHP API` 之一编写。可重用模块可以用 `C` 语言编写，并从 `PHP` 中调用。
@@ -2181,10 +2195,111 @@ MySQL 应用程序使用 `PHP API` 之一编写。可重用模块可以用 `C` �
 
 参见 `ASP.net`, `C`, `PHP API`。
 
-**PHP API**  
+**PHP API**
+
 有几种 API 可用于用 PHP 语言编写 MySQL 应用程序：原始 MySQL API (`Mysql`)、MySQL Improved Extension (`Mysqli`)、MySQL Native Driver (`Mysqlnd`)、MySQL 函数 (`PDO_MYSQL`) 和 `Connector/PHP`。详情请参见 [MySQL and PHP](https://dev.mysql.com/doc/refman/8.0/en/apis-interfaces.html)。
 
 参见 `API`, `PHP`。
 
-**physical**  
-一种涉及硬件相关方面（如磁盘块、内存页、文件、位、磁盘读取等）的操作类型。通常
+**physical**
+
+一种涉及硬件相关方面（如磁盘块、内存页、文件、位、磁盘读取等）的操作类型。通常，物理方面在专家级性能调优和问题诊断中很重要。与逻辑形成对比。
+
+参见 `logical`, `physical backup`。
+
+**physical backup**  
+一种复制实际数据文件的备份。例如，MySQL Enterprise Backup 产品的 `mysqlbackup` 命令生成物理备份，因为其输出包含可由 `mysqld` 服务器直接使用的数据文件，从而使恢复操作更快。与逻辑备份形成对比。
+
+参见 `backup`, `logical backup`, `MySQL Enterprise Backup`, `restore`。
+
+**PITR**  
+`point-in-time recovery` 的缩写。
+
+参见 `point-in-time recovery`。
+
+**plan stability**  
+查询执行计划的属性，优化器为给定查询每次做出的选择相同，从而性能一致且可预测。
+
+参见 `query`, `query execution plan`。
+
+**point-in-time recovery**  
+将备份恢复到特定日期和时间以重新创建数据库状态的过程。通常缩写为`PITR`。由于指定时间不太可能与备份时间完全一致，因此通常需要物理备份和逻辑备份的组合来实现此技术。例如，使用 MySQL Enterprise Backup 产品，可以恢复在指定时间之前拍摄的最后一次备份，然后重播二进制日志中的更改，直到 `PITR` 时间。
+
+参见 `backup`, `binary log`, `logical backup`, `MySQL Enterprise Backup`, `physical backup`。
+
+**port**  
+数据库服务器监听的 TCP/IP 套接字的端口号，用于建立连接。通常与主机一起指定。根据网络加密的使用情况，可能有一个端口用于未加密流量，另一个端口用于 `SSL` 连接。
+
+参见 `connection`, `host`, `SSL`。
+
+**prefix**  
+参见 `index prefix`。
+
+**prepared backup**  
+由 MySQL Enterprise Backup 产品在应用所有二进制日志和增量备份的步骤完成后生成的备份文件集。生成的文件已准备好恢复。在应用步骤之前，这些文件称为 `raw backup`。
+
+参见 `binary log`, `hot backup`, `incremental backup`, `MySQL Enterprise Backup`, `raw backup`, `restore`。
+
+**prepared statement**  
+一种提前分析以确定高效执行计划的 SQL 语句。可以多次执行，而无需每次解析和分析的开销。通过使用占位符，可以为 `WHERE` 子句中的字面量每次替换不同的值。此替换技术提高了安全性，防止某些类型的 `SQL` 注入攻击。您还可以减少将返回值转换并复制到程序变量的开销。
+
+尽管可以通过 SQL 语法直接使用预处理语句，但各种连接器都有用于操作预处理语句的编程接口，这些 API 比通过 SQL 更高效。
+
+参见 `client-side prepared statement`, `connector`, `server-side prepared statement`。
+
+**primary key**  
+能够唯一标识表中每一行的一组列，以及基于该组列的索引。因此，它必须是一个不包含任何 `NULL` 值的唯一索引。
+
+`InnoDB` 要求每个表都具有这样的索引（也称为聚簇索引或聚集索引），并根据主键的列值组织表存储。
+
+选择主键值时，请考虑使用任意值（合成键），而不是依赖于其他来源派生的值（自然键）。
+
+参见 `clustered index`, `index`, `natural key`, `synthetic key`。
+
+**principal**  
+Kerberos 术语中，表示命名实体，如用户或服务器。
+
+参见 `service principal name`, `user principal name`。
+
+**process**  
+正在执行的程序实例。操作系统在多个正在运行的进程之间切换，允许一定程度的并发性。在大多数操作系统上，进程可以包含共享资源的多个执行线程。在线程之间的上下文切换比进程之间的切换要快。
+
+参见 `concurrency`, `thread`。
+
+**pseudo-record**  
+索引中的一个人工记录，用于锁定当前不存在的键值或范围。
+
+参见 `infimum record`, `locking`, `supremum record`。
+
+**Pthreads**  
+POSIX 线程标准，定义了在 Unix 和 Linux 系统上用于线程和锁操作的 API。在 Unix 和 Linux 系统上，InnoDB 使用该实现来管理 `mutexes`。
+
+参见 `mutex`。
+
+**purge**  
+由一个或多个单独的后台线程（由 `innodb_purge_threads` 控制）执行的垃圾收集类型，按周期计划运行。`Purge` 解析并处理来自历史列表的撤销日志页，以删除标记为删除且不再用于 `MVCC` 或回滚的聚簇和二级索引记录。处理后，`Purge` 释放历史列表中的撤销日志页。
+
+参见 `history list`, `MVCC`, `rollback`, `undo log`。
+
+**purge buffering**  
+将由于 `DELETE` 操作导致的二级索引页的更改存储在更改缓冲区中，而不是立即写入更改，以便可以执行物理写入，以最小化随机 `I/O`。由于删除操作是一个两步过程，此操作缓冲了通常清除先前标记为删除的索引记录的写操作。这是更改缓冲的类型之一；其他的是插入缓冲和删除缓冲。
+
+参见 `change buffer`, `change buffering`, `delete buffering`, `insert buffer`, `insert buffering`。
+
+**purge lag**  
+InnoDB 历史列表的另一种名称。与 `innodb_max_purge_lag` 配置选项相关。
+
+参见 `history list`, `purge`。
+
+**purge thread**  
+InnoDB 进程内专用于执行周期性清除操作的线程。在 MySQL 5.6 及更高版本中，通过 `innodb_purge_threads` 配置选项启用多个清除线程。
+
+参见 `purge`, `thread`。
+
+**Python**  
+一种广泛应用于多个领域的编程语言，从 Unix 脚本到大规模应用程序。包括运行时类型、高级数据类型、面向对象的功能和广泛的标准库。通常用作其他语言编写的组件之间的“胶水”语言。MySQL Python API 是开源的 `MySQLdb` 模块。
+
+参见 `MySQLdb`, `Python API`。
+
+**Python API**  
+参见 `API`, `Python`。
