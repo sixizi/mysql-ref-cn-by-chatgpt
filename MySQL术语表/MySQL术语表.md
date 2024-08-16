@@ -1999,37 +1999,42 @@ MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操�
 
 ## O
 
+**.OPT file**
 
-**.OPT file**  
 包含数据库配置信息的文件。具有此扩展名的文件会包含在由 MySQL Enterprise Backup 产品的 `mysqlbackup` 命令生成的备份中。
 
 参见 `MySQL Enterprise Backup`, `mysqlbackup command`。
 
-**ODBC**  
+**ODBC**
+
 `Open Database Connectivity` 的缩写，一种行业标准的API。通常用于基于 Windows 的服务器，或需要通过`ODBC`与 MySQL 通信的应用程序。MySQL 的 ODBC 驱动程序称为 `Connector/ODBC`。
 
 参见 `Connector/ODBC`。
 
-**off-page column**  
+**off-page column**
+
 包含变长数据（如 `BLOB` 和 `VARCHAR`）的列，这些数据长度过长，无法放入 `B-tree` 页中。数据存储在溢出页中。`DYNAMIC` 行格式比旧的 `COMPACT` 行格式在此类存储中更为高效。
 
 参见 `B-tree`, `compact row format`, `dynamic row format`, `overflow page`。
 
-**OLTP**  
+**OLTP**
+
 “`Online Transaction Processing`”的缩写。用于处理大量事务的数据库系统或应用程序，通常涉及频繁的写入和读取，每次操作的数据量较少。例如，航空公司预订系统或处理银行存款的应用程序。数据可能以规范化形式组织，以在`DML`（插入/更新/删除）效率和查询效率之间取得平衡。与数据仓库形成对比。
 
 由于其行级锁定和事务能力，`InnoDB`是用于`OLTP`应用程序的 MySQL 表的理想存储引擎。
 
 参见 `data warehouse`, `DML`, `InnoDB`, `query`, `row lock`, `transaction`。
 
-**online**  
+**online**
+
 涉及数据库无停机、无阻塞或无限制操作的操作类型。通常应用于 `DDL`。缩短受限操作期间的操作（如快速索引创建）已在 MySQL 5.6 中演变为更广泛的在线`DDL`操作集。
 
 在备份上下文中，热备份是一种在线操作，暖备份部分是在线操作。
 
 参见 `DDL`, `Fast Index Creation`, `hot backup`, `online DDL`, `warm backup`。
 
-**online DDL**  
+**online DDL**
+
 一种在 `DDL`（主要是 `ALTER TABLE`）操作期间提高 `InnoDB`表的性能、并发性和可用性的功能。详细信息参见[17.12节 “InnoDB and Online DDL”](https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl.html)。
 
 具体操作方式根据操作类型而异。在某些情况下，可以在 `ALTER TABLE`进行时同时修改表。操作可能无需复制表，或者使用特别优化的表复制类型。就地操作的 `DML` 日志空间使用量由配置选项`innodb_online_alter_log_max_size`控制。
@@ -2038,7 +2043,8 @@ MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操�
 
 参见 `DDL`, `Fast Index Creation`, `online`。
 
-**optimistic**  
+**optimistic**
+
 指导关系数据库系统低级实现决策的方法论。关系数据库的性能和并发性要求操作必须快速启动或分派。而一致性和引用完整性的要求意味着任何操作都可能失败：事务可能被回滚，`DML`操作可能违反约束，请求锁可能导致死锁，网络错误可能导致超时。乐观策略假设大多数请求或尝试会成功，因此为失败情况做的准备工作相对较少。当这种假设成立时，数据库几乎不会做多余的工作；当请求失败时，必须做额外的工作来清理和撤销更改。
 
 `InnoDB`在锁定和提交等操作中使用乐观策略。例如，事务更改的数据可以在提交之前写入数据文件，从而使提交本身非常快，但如果事务被回滚，则需要更多工作来撤销更改。
@@ -2047,24 +2053,30 @@ MySQL企业备份产品的命令行工具。它为`InnoDB`表执行热备份操�
 
 参见 `commit`, `concurrency`, `DML`, `locking`, `pessimistic`, `referential integrity`。
 
-**optimizer**  
+**optimizer**
+
 MySQL 组件，确定查询中使用的最佳索引和连接顺序，基于相关表的特征和数据分布。
 
 参见 `index`, `join`, `query`, `table`。
 
-**option**  
+**option**
+
 MySQL 的配置参数，可以存储在配置文件中或通过命令行传递。
 
 对于适用于`InnoDB`表的选项，每个选项名称都以前缀`innodb_`开头。
 
 参见 `InnoDB`, `option`, `option file`。
 
-**option file**  
+**option file**
+
 存储 MySQL 实例配置选项的文件。传统上，在 Linux 和 Unix 上该文件名为 `my.cnf`，在 Windows 上则为 `my.ini`。
 
 参见 `configuration file`, `my.cnf`, `my.ini`, `option`。
 
-**overflow page**  
+**overflow page**
+
 分配给包含变长列（如`BLOB`和`VARCHAR`）的磁盘页，这些列太长，无法放入`B-tree`页中。关联的列称为页外列。
 
 参见 `B-tree`, `off-page column`, `page`。
+
+## P
