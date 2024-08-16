@@ -2207,47 +2207,56 @@ MySQL 应用程序使用 `PHP API` 之一编写。可重用模块可以用 `C` �
 
 参见 `logical`, `physical backup`。
 
-**physical backup**  
+**physical backup**
+
 一种复制实际数据文件的备份。例如，MySQL Enterprise Backup 产品的 `mysqlbackup` 命令生成物理备份，因为其输出包含可由 `mysqld` 服务器直接使用的数据文件，从而使恢复操作更快。与逻辑备份形成对比。
 
 参见 `backup`, `logical backup`, `MySQL Enterprise Backup`, `restore`。
 
-**PITR**  
+**PITR**
+
 `point-in-time recovery` 的缩写。
 
 参见 `point-in-time recovery`。
 
-**plan stability**  
+**plan stability**
+
 查询执行计划的属性，优化器为给定查询每次做出的选择相同，从而性能一致且可预测。
 
 参见 `query`, `query execution plan`。
 
-**point-in-time recovery**  
+**point-in-time recovery**
+
 将备份恢复到特定日期和时间以重新创建数据库状态的过程。通常缩写为`PITR`。由于指定时间不太可能与备份时间完全一致，因此通常需要物理备份和逻辑备份的组合来实现此技术。例如，使用 MySQL Enterprise Backup 产品，可以恢复在指定时间之前拍摄的最后一次备份，然后重播二进制日志中的更改，直到 `PITR` 时间。
 
 参见 `backup`, `binary log`, `logical backup`, `MySQL Enterprise Backup`, `physical backup`。
 
-**port**  
+**port**
+
 数据库服务器监听的 TCP/IP 套接字的端口号，用于建立连接。通常与主机一起指定。根据网络加密的使用情况，可能有一个端口用于未加密流量，另一个端口用于 `SSL` 连接。
 
 参见 `connection`, `host`, `SSL`。
 
-**prefix**  
+**prefix**
+
 参见 `index prefix`。
 
-**prepared backup**  
+**prepared backup**
+
 由 MySQL Enterprise Backup 产品在应用所有二进制日志和增量备份的步骤完成后生成的备份文件集。生成的文件已准备好恢复。在应用步骤之前，这些文件称为 `raw backup`。
 
 参见 `binary log`, `hot backup`, `incremental backup`, `MySQL Enterprise Backup`, `raw backup`, `restore`。
 
-**prepared statement**  
+**prepared statement**
+
 一种提前分析以确定高效执行计划的 SQL 语句。可以多次执行，而无需每次解析和分析的开销。通过使用占位符，可以为 `WHERE` 子句中的字面量每次替换不同的值。此替换技术提高了安全性，防止某些类型的 `SQL` 注入攻击。您还可以减少将返回值转换并复制到程序变量的开销。
 
 尽管可以通过 SQL 语法直接使用预处理语句，但各种连接器都有用于操作预处理语句的编程接口，这些 API 比通过 SQL 更高效。
 
 参见 `client-side prepared statement`, `connector`, `server-side prepared statement`。
 
-**primary key**  
+**primary key**
+
 能够唯一标识表中每一行的一组列，以及基于该组列的索引。因此，它必须是一个不包含任何 `NULL` 值的唯一索引。
 
 `InnoDB` 要求每个表都具有这样的索引（也称为聚簇索引或聚集索引），并根据主键的列值组织表存储。
@@ -2256,50 +2265,60 @@ MySQL 应用程序使用 `PHP API` 之一编写。可重用模块可以用 `C` �
 
 参见 `clustered index`, `index`, `natural key`, `synthetic key`。
 
-**principal**  
+**principal**
+
 Kerberos 术语中，表示命名实体，如用户或服务器。
 
 参见 `service principal name`, `user principal name`。
 
-**process**  
+**process**
+
 正在执行的程序实例。操作系统在多个正在运行的进程之间切换，允许一定程度的并发性。在大多数操作系统上，进程可以包含共享资源的多个执行线程。在线程之间的上下文切换比进程之间的切换要快。
 
 参见 `concurrency`, `thread`。
 
-**pseudo-record**  
+**pseudo-record**
+
 索引中的一个人工记录，用于锁定当前不存在的键值或范围。
 
 参见 `infimum record`, `locking`, `supremum record`。
 
-**Pthreads**  
+**Pthreads**
+
 POSIX 线程标准，定义了在 Unix 和 Linux 系统上用于线程和锁操作的 API。在 Unix 和 Linux 系统上，InnoDB 使用该实现来管理 `mutexes`。
 
 参见 `mutex`。
 
-**purge**  
+**purge**
+
 由一个或多个单独的后台线程（由 `innodb_purge_threads` 控制）执行的垃圾收集类型，按周期计划运行。`Purge` 解析并处理来自历史列表的撤销日志页，以删除标记为删除且不再用于 `MVCC` 或回滚的聚簇和二级索引记录。处理后，`Purge` 释放历史列表中的撤销日志页。
 
 参见 `history list`, `MVCC`, `rollback`, `undo log`。
 
-**purge buffering**  
+**purge buffering**
+
 将由于 `DELETE` 操作导致的二级索引页的更改存储在更改缓冲区中，而不是立即写入更改，以便可以执行物理写入，以最小化随机 `I/O`。由于删除操作是一个两步过程，此操作缓冲了通常清除先前标记为删除的索引记录的写操作。这是更改缓冲的类型之一；其他的是插入缓冲和删除缓冲。
 
 参见 `change buffer`, `change buffering`, `delete buffering`, `insert buffer`, `insert buffering`。
 
-**purge lag**  
+**purge lag**
+
 InnoDB 历史列表的另一种名称。与 `innodb_max_purge_lag` 配置选项相关。
 
 参见 `history list`, `purge`。
 
-**purge thread**  
+**purge thread**
+
 InnoDB 进程内专用于执行周期性清除操作的线程。在 MySQL 5.6 及更高版本中，通过 `innodb_purge_threads` 配置选项启用多个清除线程。
 
 参见 `purge`, `thread`。
 
-**Python**  
+**Python**
+
 一种广泛应用于多个领域的编程语言，从 Unix 脚本到大规模应用程序。包括运行时类型、高级数据类型、面向对象的功能和广泛的标准库。通常用作其他语言编写的组件之间的“胶水”语言。MySQL Python API 是开源的 `MySQLdb` 模块。
 
 参见 `MySQLdb`, `Python API`。
 
-**Python API**  
+**Python API**
+
 参见 `API`, `Python`。
