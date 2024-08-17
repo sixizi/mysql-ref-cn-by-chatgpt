@@ -2590,7 +2590,7 @@ sx-lock 允许对公共资源进行写访问，同时允许其他线程进行不
 以下矩阵总结了 rw-lock 类型的兼容性。
 
 |   | S | SX | X |
-|---|---|---|---|
+|||||
 | **S**  | Compatible | Compatible | Conflict |
 | **SX** | Compatible | Conflict   | Conflict |
 | **X**  | Conflict   | Conflict   | Conflict |
@@ -2605,15 +2605,11 @@ sx-lock 允许对公共资源进行写访问，同时允许其他线程进行不
 
 参见：`rollback`，`transaction`。
 
----
-
 **scalability**
 
 可扩展性指的是在不因系统容量限制而导致性能突然下降的情况下，能够增加更多工作并发出更多同时请求的能力。软件架构、硬件配置、应用程序编码和工作负载类型都影响可扩展性。当系统达到其最大容量时，提高可扩展性的常见技术包括纵向扩展（增加现有硬件或软件的容量）和横向扩展（增加新服务器和更多 MySQL 实例）。通常与可用性一起被视为大规模部署的关键方面。
 
 参见：`availability`，`scale out`，`scale up`。
-
----
 
 **scale out**
 
@@ -2621,15 +2617,11 @@ sx-lock 允许对公共资源进行写访问，同时允许其他线程进行不
 
 参见：`scalability`，`scale up`。
 
----
-
 **scale up**
 
 通过增加现有硬件或软件的容量来提高可扩展性的一种技术。例如，增加服务器上的内存并调整与内存相关的参数，如 `innodb_buffer_pool_size` 和 `innodb_buffer_pool_instances`。与横向扩展相对。
 
 参见：`scalability`，`scale out`。
-
----
 
 **schema**
 
@@ -2641,23 +2633,17 @@ sx-lock 允许对公共资源进行写访问，同时允许其他线程进行不
 
 参见：`database`，`INFORMATION_SCHEMA`，`Performance Schema`。
 
----
-
 **SDI**
 
 “序列化字典信息”的缩写。
 
 参见：`serialized dictionary information (SDI)`。
 
----
-
 **search index**
 
 在 MySQL 中，全文搜索查询使用一种特殊类型的索引，即 `FULLTEXT` 索引。从 MySQL 5.6.4 开始，`InnoDB` 和 `MyISAM` 表都支持 `FULLTEXT` 索引；以前，这些索引仅适用于 `MyISAM` 表。
 
 参见：`full-text search`，`FULLTEXT index`。
-
----
 
 **secondary index**
 
@@ -2669,8 +2655,6 @@ sx-lock 允许对公共资源进行写访问，同时允许其他线程进行不
 
 参见：`clustered index`，`Fast Index Creation`，`index`。
 
----
-
 **segment**
 
 InnoDB 表空间内的一个分区。如果表空间类似于目录，则段类似于该目录中的文件。段可以增长。可以创建新的段。
@@ -2681,23 +2665,17 @@ InnoDB 表空间内的一个分区。如果表空间类似于目录，则段类�
 
 参见：`extent`，`file-per-table`，`rollback segment`，`system tablespace`，`tablespace`，`undo log`。
 
----
-
 **selectivity**
 
 数据分布的一个属性，即列中不同值的数量（其基数）除以表中的记录数。高选择性意味着列值相对唯一，可以通过索引有效地检索。如果您（或查询优化器）可以预测 `WHERE` 子句中的测试仅匹配表中少量（或比例）行，则总体查询在首先使用索引评估该测试时往往效率更高。
 
 参见：`cardinality`，`query`。
 
----
-
 **semi-consistent read**
 
 用于 `UPDATE` 语句的一种读取操作，是 `READ COMMITTED` 和 `consistent read` 的组合。当 `UPDATE` 语句检查已锁定的行时，InnoDB 将最新的已提交版本返回给 MySQL，以便 MySQL 可以确定该行是否符合 `UPDATE` 的 `WHERE` 条件。如果该行匹配（必须更新），MySQL 将再次读取该行，这次 InnoDB 要么锁定它，要么等待锁定它。当事务具有 `READ COMMITTED` 隔离级别时，只能发生这种读取操作。
 
 参见：`consistent read`，`isolation level`，`READ COMMITTED`。
-
----
 
 **SERIALIZABLE**
 
@@ -2706,8 +2684,6 @@ InnoDB 表空间内的一个分区。如果表空间类似于目录，则段类�
 这是 SQL 标准规定的默认隔离级别。实际上，通常不需要这种严格的程度，因此 InnoDB 的默认隔离级别是下一个最严格的 `REPEATABLE READ`。
 
 参见：`ACID`，`consistent read`，`isolation level`，`locking`，`REPEATABLE READ`，`transaction`。
-
----
 
 **serialized dictionary information (SDI)**
 
@@ -2719,15 +2695,11 @@ InnoDB 表空间内的一个分区。如果表空间类似于目录，则段类�
 
 参见：`file-per-table`，`general tablespace`，`system tablespace`，`tablespace`。
 
----
-
 **server**
 
 一种程序，持续运行，等待接收并执行来自另一个程序（客户端）的请求。因为通常整个计算机都用于运行一个或多个服务器程序（如数据库服务器、Web 服务器、应用服务器或这些的组合），所以术语“服务器”也可以指运行服务器软件的计算机。
 
 参见：`client`，`mysqld`。
-
----
 
 **server-side prepared statement**
 
@@ -2735,28 +2707,258 @@ InnoDB 表空间内的一个分区。如果表空间类似于目录，则段类�
 
 参见：`client-side prepared statement`，`Connector/J`，`Connector/PHP`，`prepared statement`。
 
----
-
 **service principal name**
 
 表示服务的 Kerberos 命名实体名称。
 
 参见：`principal`。
 
----
-
 **service ticket**
 
 提供对应用服务（如 Web 或数据库服务器提供的服务）访问权限的 Kerberos 票证。
-
----
 
 **servlet**
 
 参见：`Connector/J`。
 
----
-
 **session temporary tablespace**
 
-存储用户创建的临时表和由优化器创建的内部临时表的临时表空间，当 InnoDB 被配置为内部临时表的磁盘
+存储用户创建的临时表和由优化器创建的内部临时表的临时表空间，当 InnoDB 被配置为内部临时表的磁盘存储引擎时使用。
+
+参见：`optimizer`，`temporary table`，`temporary tablespace`。
+
+**shared lock**
+
+一种锁，允许其他事务读取被锁定的对象，并且还可以获取其他共享锁，但不能对其进行写操作。与独占锁相对。
+
+参见：`exclusive lock`，`lock`，`transaction`。
+
+**shared tablespace**
+
+另一种指代系统表空间或通用表空间的方式。通用表空间在 MySQL 5.7 中引入。多个表可以位于共享表空间中。每个 `file-per-table` 表空间只能包含一个表。
+
+参见：`general tablespace`，`system tablespace`。
+
+**sharp checkpoint**
+
+将包含在 `redo log` 的某个部分中的所有脏页刷新到磁盘的过程。发生在 InnoDB 重新使用日志文件的一部分之前；日志文件以循环方式使用。通常发生在写密集型工作负载下。
+
+参见：`dirty page`，`flush`，`redo log`，`workload`。
+
+**shutdown**
+
+停止 MySQL 服务器的过程。默认情况下，此过程会清理 InnoDB 表的操作，因此 InnoDB 关闭速度较慢，但随后启动速度较快。如果跳过清理操作，则关闭速度较快，但在下次重启时必须执行清理操作。
+
+InnoDB 的关闭模式由 `innodb_fast_shutdown` 选项控制。
+
+参见：`fast shutdown`，`InnoDB`，`slow shutdown`，`startup`。
+
+**slave**
+
+参见：`replica`。
+
+**slow query log**
+
+一种日志类型，用于对 MySQL 服务器处理的 SQL 语句进行性能调优。日志信息存储在文件中。必须启用此功能才能使用它。您可以控制哪些类别的“慢” SQL 语句会记录下来。更多信息，请参见《第 7.4.5 节，慢查询日志》。
+
+参见：`general query log`，`log`。
+
+**slow shutdown**
+
+一种关闭类型，在完成之前执行额外的 InnoDB 刷新操作。也称为“干净关闭”。通过配置参数 `innodb_fast_shutdown=0` 或命令 `SET GLOBAL innodb_fast_shutdown=0;` 指定。尽管关闭本身可能需要更长时间，但这种时间应在随后的启动时节省。
+
+参见：`clean shutdown`，`fast shutdown`，`shutdown`。
+
+**snapshot**
+
+特定时间点的数据表示，即使其他事务提交更改后，该表示也保持不变。某些隔离级别使用快照来允许一致读取。
+
+参见：`commit`，`consistent read`，`isolation level`，`transaction`。
+
+**sort buffer**
+
+在创建 InnoDB 索引期间用于排序数据的缓冲区。排序缓冲区大小通过 `innodb_sort_buffer_size` 配置选项进行配置。
+
+**source**
+
+在复制场景中处理数据的初始插入、更新和删除请求的数据库服务器。这些更改传播到其他称为副本的服务器上，并在这些服务器上重复。
+
+参见：`replica`，`replication`。
+
+**space ID**
+
+用于唯一标识 MySQL 实例中 InnoDB 表空间的标识符。系统表空间的 `space ID` 始终为 0；此 ID 适用于系统表空间或通用表空间内的所有表。每个 `file-per-table` 表空间和通用表空间都有自己的空间 ID。
+
+在 MySQL 5.6 之前，此硬编码值在 InnoDB 表空间文件在 MySQL 实例之间移动时会引发困难。从 MySQL 5.6 开始，您可以通过使用 `FLUSH TABLES ... FOR EXPORT`，`ALTER TABLE ... DISCARD TABLESPACE` 和 `ALTER TABLE ... IMPORT TABLESPACE` 等语句进行传输表空间功能，在实例之间复制表空间文件。调整空间 ID 所需的信息在与表空间一起复制的 `.cfg` 文件中传达。有关详细信息，请参见《第 17.6.1.3 节，导入 InnoDB 表》。
+
+参见：`.cfg file`，`file-per-table`，`general tablespace`，`.ibd file`，`system tablespace`，`tablespace`，`transportable tablespace`。
+
+**sparse file**
+
+一种文件类型，通过将表示空块的元数据写入磁盘而不是写入实际的空白空间来更有效地使用文件系统空间。InnoDB 的透明页压缩功能依赖于稀疏文件支持。更多信息，请参见《第 17.9.2 节，InnoDB 页压缩》。
+
+参见：`hole punching`，`transparent page compression`。
+
+**spin**
+
+一种等待操作，持续测试资源是否可用。此技术用于通常仅保持短时间的资源，其中在“忙循环”中等待比将线程置于休眠状态并执行上下文切换更有效。如果资源在短时间内未变得可用，旋转循环将停止，并使用其他等待技术。
+
+参见：`latch`，`lock`，`mutex`，`wait`。
+
+**SPN**
+
+参见：`service principal name`。
+
+**Spring**
+
+一种基于 Java 的应用程序框架，旨在通过提供配置组件的方式帮助应用程序设计。
+
+参见：`J2EE`。
+
+**SQL**
+
+标准化的结构化查询语言，用于执行数据库操作。通常分为 `DDL`、`DML` 和查询等类别。MySQL 包含一些额外的语句类别，例如复制。有关 SQL 语法的构建块，MySQL 表列的数据类型，SQL 语句的详细信息及其相关类别，以及查询中使用的标准和 MySQL 特定函数的详细信息，请参见《第 11 章，语言结构》，《第 13 章，数据类型》，《第 15 章，SQL 语句》，以及《第 14 章，函数和运算符》。
+
+参见：`DDL`，`DML`，`query`，`replication`。
+
+**SQLState**
+
+由 `JDBC` 标准定义的错误代码，用于使用 `Connector/J` 的应用程序中的异常处理。
+
+参见：`Connector/J`，`JDBC`。
+
+**SSD**
+
+“固态硬盘”的缩写。与传统的硬盘驱动器（HDD）相比，这种存储设备具有不同的性能特征：存储容量较小，随机读取速度较快，没有移动部件，并且有许多影响写性能的考虑因素。其性能特征会影响磁盘绑定工作负载的吞吐量。
+
+参见：`disk-bound`，`HDD`。
+
+**SSL**
+
+“安全套接字层”的缩写。为应用程序与 MySQL 数据库服务器之间的网络通信提供加密层。
+
+参见：`keystore`，`truststore`。
+
+**ST**
+
+参见：`service ticket`。
+
+**startup**
+
+启动 MySQL 服务器的过程。通常由《第 6.3 节，服务器和服务器启动程序》中列出的程序之一完成。与关闭相对。
+
+参见：`shutdown`。
+
+**statement interceptor**
+
+一种用于跟踪、调试或增强数据库应用程序发出的 SQL 语句的拦截器类型。有时也称为命令拦截器。
+
+在使用 `Connector/J` 的 Java 应用程序中，设置这种类型的拦截器涉及实现 `com.mysql.jdbc.StatementInterceptorV2` 接口，并将 `statementInterceptors` 属性添加到连接字符串中。
+
+在使用 `Connector/NET` 的 Visual Studio 应用程序中，设置这种类型的拦截器涉及定义一个从 `BaseCommandInterceptor` 类继承的类，并将该类名称指定为连接字符串的一部分。
+
+参见：`command interceptor`，`connection string`，`Connector/J`，`Connector/NET`，`interceptor`，`Java`，`Visual Studio`。
+
+**statement-based replication**
+
+一种复制形式，其中 SQL 语句从源发送并在副本上重放。需要对 `innodb_autoinc_lock_mode` 选项的设置格外注意，以避免自动增量锁定的潜在时序问题。
+
+参见：`auto-increment locking`，`innodb_autoinc_lock_mode`，`replica`，`replication`，`row-based replication`，`source`。
+
+**statistics**
+
+与每个 InnoDB 表和索引相关的估计值，用于构造有效的查询执行计划。主要值包括基数（不同值的数量）和表行或索引条目的总数。表的统计信息表示其主键索引中的数据。二级索引的统计信息表示该索引涵盖的行。
+
+这些值是估计的而不是精确计数的，因为在任何时候，不同的事务都可能在同一表中插入和删除行。为了防止这些值频繁重新计算，您可以启用持久化统计信息，其中值存储在 InnoDB 系统表中，并仅在您发出 `ANALYZE TABLE` 语句时刷新。
+
+您可以通过 `innodb_stats_method` 配置选项控制计算统计信息时如何处理 `NULL` 值。
+
+通过 `INFORMATION_SCHEMA` 和 `PERFORMANCE_SCHEMA` 表，还可以获得数据库对象和数据库活动的其他类型统计信息。
+
+参见：`cardinality`，`index`，`INFORMATION_SCHEMA`，`NULL`，`Performance Schema`，`persistent statistics`，`primary key`，`query execution plan`，`secondary index`，`table`，`transaction`。
+
+**stemming**
+
+根据共同的词根搜索不同词形变体的能力，例如单数和复数，或过去、现在和将来时态。目前仅在 `MyISAM` 全文搜索功能中支持此功能，而 InnoDB 表的 `FULLTEXT` 索引中不支持。
+
+参见：`full-text search`，`FULLTEXT index`。
+
+**stopword**
+
+在 `FULLTEXT` 索引中，被视为常见或琐碎到不需要包含在搜索索引中且在搜索查询中被忽略的词。不同的配置设置控制 InnoDB 和 MyISAM 表的停用词处理。更多信息，请参见《第 14.9.4 节，全文停用词》。
+
+参见：`FULLTEXT index`，`search index`。
+
+**storage engine**
+
+MySQL 数据库的一个组件，负责执行存储、更新和查询数据的底层工作。在 MySQL 5.5 及更高版本中，`InnoDB` 是新表的默认存储引擎，取代了 `MyISAM`。不同的存储引擎在内存使用与磁盘使用、读取速度与写入速度、速度与健壮性等因素之间进行不同的权衡。每个存储引擎管理特定的表，因此我们会提到 `InnoDB` 表、`MyISAM` 表等。
+
+MySQL Enterprise Backup 产品针对 InnoDB 表的备份进行了优化。它也可以备份由 MyISAM 和其他存储引擎处理的表。
+
+参见：`InnoDB`，`MySQL Enterprise Backup`，`table type`。
+
+**stored generated column**
+
+值从列定义中包含的表达式计算得出的列。在插入或更新行时评估和存储列值。存储生成列需要存储空间并且可以被索引。
+
+与虚拟生成列形成对比。
+
+参见：`base column`，`generated column`，`virtual generated column`。
+
+**stored object**
+
+存储程序或视图。
+
+**stored program**
+
+存储例程（过程或函数）、触发器或事件调度程序事件。
+
+**stored routine**
+
+存储过程或函数。
+
+**strict mode**
+
+由 `innodb_strict_mode` 选项控制的设置的通用名称。启用此设置后，某些通常被视为警告的条件将被视为错误（并且底层语句失败）。例如，某些与文件格式和行格式相关的无效选项组合，通常会生成警告并继续使用默认值，现在会导致 `CREATE TABLE` 操作失败。`innodb_strict_mode` 在 MySQL 5.7 中默认启用。
+
+MySQL 还具有所谓的严格模式。参见《第 7.1.11 节，服务器 SQL 模式》。
+
+参见：`file format`，`innodb_strict_mode`，`row format`。
+
+**sublist**
+
+在表示缓冲池的列表结构中，较旧和较新的页面由列表的不同部分表示。一组参数控制这些部分的大小以及新旧页面之间的分界点。
+
+参见：`buffer pool`，`eviction`，`list`，`LRU`。
+
+**supremum record**
+
+索引中的伪记录，表示大于该索引中最大值的间隙。如果事务具有诸如 `SELECT ... FROM ... WHERE col > 10 FOR UPDATE;` 之类的语句，并且列中的最大值为 20，则对 `supremum` 记录的锁定将防止其他事务插入更大的值，例如 50、100 等。
+
+参见：`gap`，`infimum record`，`pseudo-record`。
+
+**surrogate key**
+
+`synthetic key` 的同义词。
+
+参见：`synthetic key`。
+
+**synthetic key**
+
+索引列，通常是主键，其值是任意分配的。通常使用自增列完成。通过将值视为完全任意的，可以避免过于严格的规则和错误的应用假设。例如，如果某个员工被批准雇佣但从未真正加入公司，表示员工编号的数字序列可能会有空缺。或者，如果员工离开公司后重新加入，员工编号 100 的入职日期可能比员工编号 500 的晚。数值也会产生可预测长度的较短值。例如，存储代表“Road”、“Boulevard”、“Expressway”等的数字代码比反复存储这些字符串更节省空间。
+
+也称为代理键。与自然键形成对比。
+
+参见：`auto-increment`，`natural key`，`primary key`，`surrogate key`。
+
+**system tablespace**
+
+包含 InnoDB 相关对象的元数据、`change buffer` 的存储区和 `doublewrite buffer` 的一个或多个数据文件（ibdata 文件）。如果表是在系统表空间而不是 `file-per-table` 或通用表空间中创建的，系统表空间还可能包含 InnoDB 表的表和索引数据。系统表空间中的数据和元数据适用于 MySQL 实例中的所有数据库。
+
+在 MySQL 5.6.7 之前，默认是将所有 InnoDB 表和索引保留在系统表空间内，这通常会导致该文件变得非常大。由于系统表空间从不缩小，如果加载并删除了大量临时数据，可能会出现存储问题。在 MySQL 8.0 中，默认设置为 `file-per-table` 模式，其中每个表及其关联的索引存储在一个单独的 .ibd 文件中。此默认设置使得使用依赖于 `DYNAMIC` 和 `COMPRESSED` 行格式的 InnoDB 功能（例如表压缩、离页列的有效存储以及大索引键前缀）变得更加容易。
+
+将所有表数据保留在系统表空间或单独的 .ibd 文件中对存储管理有一定影响。MySQL Enterprise Backup 产品可能会备份少量的大文件，或者是许多较小的文件。在包含数千个表的系统上，处理数千个 .ibd 文件的文件系统操作可能会导致瓶颈。
+
+InnoDB 在 MySQL 5.7.6 中引入了通用表空间，这些表空间也由 .ibd 文件表示。通用表空间是使用 `CREATE TABLESPACE` 语法创建的共享表空间。它们可以在数据目录之外创建，能够容纳多个表，并支持所有行格式的表。
+
+参见：`change buffer`，`compression`，`data dictionary`，`database`，`doublewrite buffer`，`dynamic row format`，`file-per-table`，`general tablespace`，`.ibd file`，`ibdata file`，`innodb_file_per_table`，`instance`，`MySQL Enterprise Backup`，`off-page column`，`tablespace`，`undo log`。
