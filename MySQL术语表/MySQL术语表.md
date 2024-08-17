@@ -2596,3 +2596,167 @@ sx-lock 允许对公共资源进行写访问，同时允许其他线程进行不
 | **X**  | Conflict   | Conflict   | Conflict |
 
 参见 `latch`, `lock`, `mutex`, `Performance Schema`。
+
+## S
+
+**savepoint**
+
+保存点有助于实现嵌套事务。它们可以为属于较大事务的表操作提供范围。例如，在预订系统中安排一次旅行可能涉及预订多个不同的航班；如果某个航班无法预订，您可以回滚涉及预订该航段的更改，而无需回滚之前成功预订的航班。
+
+参见：`rollback`，`transaction`。
+
+---
+
+**scalability**
+
+可扩展性指的是在不因系统容量限制而导致性能突然下降的情况下，能够增加更多工作并发出更多同时请求的能力。软件架构、硬件配置、应用程序编码和工作负载类型都影响可扩展性。当系统达到其最大容量时，提高可扩展性的常见技术包括纵向扩展（增加现有硬件或软件的容量）和横向扩展（增加新服务器和更多 MySQL 实例）。通常与可用性一起被视为大规模部署的关键方面。
+
+参见：`availability`，`scale out`，`scale up`。
+
+---
+
+**scale out**
+
+通过增加新服务器和更多 MySQL 实例来提高可扩展性的一种技术。例如，设置复制、NDB Cluster、连接池或其他将工作分散到一组服务器上的功能。与纵向扩展相对。
+
+参见：`scalability`，`scale up`。
+
+---
+
+**scale up**
+
+通过增加现有硬件或软件的容量来提高可扩展性的一种技术。例如，增加服务器上的内存并调整与内存相关的参数，如 `innodb_buffer_pool_size` 和 `innodb_buffer_pool_instances`。与横向扩展相对。
+
+参见：`scalability`，`scale out`。
+
+---
+
+**schema**
+
+概念上，模式是一个相互关联的数据库对象集合，例如表、表列、列的数据类型、索引、外键等。这些对象通过 SQL 语法连接在一起，因为列组成表，外键引用表和列等。理想情况下，它们在逻辑上也是连接在一起的，作为统一应用程序或灵活框架的一部分共同工作。例如，`INFORMATION_SCHEMA` 和 `performance_schema` 数据库在其名称中使用“schema”以强调它们包含的表和列之间的紧密关系。
+
+在 MySQL 中，物理上，模式与数据库同义。您可以在 MySQL SQL 语法中使用 `SCHEMA` 关键字代替 `DATABASE`，例如使用 `CREATE SCHEMA` 代替 `CREATE DATABASE`。
+
+其他数据库产品可能会区分这两个术语。例如，在 Oracle 数据库产品中，模式仅表示数据库的一部分：单个用户拥有的表和其他对象。
+
+参见：`database`，`INFORMATION_SCHEMA`，`Performance Schema`。
+
+---
+
+**SDI**
+
+“序列化字典信息”的缩写。
+
+参见：`serialized dictionary information (SDI)`。
+
+---
+
+**search index**
+
+在 MySQL 中，全文搜索查询使用一种特殊类型的索引，即 `FULLTEXT` 索引。从 MySQL 5.6.4 开始，`InnoDB` 和 `MyISAM` 表都支持 `FULLTEXT` 索引；以前，这些索引仅适用于 `MyISAM` 表。
+
+参见：`full-text search`，`FULLTEXT index`。
+
+---
+
+**secondary index**
+
+一种 InnoDB 索引，表示表列的子集。一个 InnoDB 表可以有零个、一个或多个二级索引。（与每个 InnoDB 表必需的、存储所有表列数据的聚簇索引形成对比。）
+
+二级索引可用于满足仅需要从索引列获取值的查询。对于更复杂的查询，它可以用于识别表中的相关行，然后通过使用聚簇索引进行查找来检索这些行。
+
+创建和删除二级索引传统上涉及大量的 InnoDB 表数据复制开销。快速索引创建功能使 InnoDB 二级索引的 `CREATE INDEX` 和 `DROP INDEX` 语句的执行速度大大提高。
+
+参见：`clustered index`，`Fast Index Creation`，`index`。
+
+---
+
+**segment**
+
+InnoDB 表空间内的一个分区。如果表空间类似于目录，则段类似于该目录中的文件。段可以增长。可以创建新的段。
+
+例如，在一个 `file-per-table` 表空间内，表数据位于一个段中，每个关联的索引位于自己的段中。系统表空间包含许多不同的段，因为它可以容纳许多表及其关联的索引。在 MySQL 8.0 之前，系统表空间还包括用于撤消日志的一个或多个回滚段。
+
+随着数据的插入和删除，段会增长和收缩。当一个段需要更多空间时，它会每次扩展一个区（1 兆字节）。同样，当一个区中的所有数据都不再需要时，段将释放一个区的空间。
+
+参见：`extent`，`file-per-table`，`rollback segment`，`system tablespace`，`tablespace`，`undo log`。
+
+---
+
+**selectivity**
+
+数据分布的一个属性，即列中不同值的数量（其基数）除以表中的记录数。高选择性意味着列值相对唯一，可以通过索引有效地检索。如果您（或查询优化器）可以预测 `WHERE` 子句中的测试仅匹配表中少量（或比例）行，则总体查询在首先使用索引评估该测试时往往效率更高。
+
+参见：`cardinality`，`query`。
+
+---
+
+**semi-consistent read**
+
+用于 `UPDATE` 语句的一种读取操作，是 `READ COMMITTED` 和 `consistent read` 的组合。当 `UPDATE` 语句检查已锁定的行时，InnoDB 将最新的已提交版本返回给 MySQL，以便 MySQL 可以确定该行是否符合 `UPDATE` 的 `WHERE` 条件。如果该行匹配（必须更新），MySQL 将再次读取该行，这次 InnoDB 要么锁定它，要么等待锁定它。当事务具有 `READ COMMITTED` 隔离级别时，只能发生这种读取操作。
+
+参见：`consistent read`，`isolation level`，`READ COMMITTED`。
+
+---
+
+**SERIALIZABLE**
+
+使用最保守锁定策略的隔离级别，以防止任何其他事务插入或更改此事务读取的数据，直到该事务完成为止。这样一来，事务内可以反复运行相同的查询，并确保每次检索到相同的结果集。任何尝试更改自当前事务开始以来由其他事务提交的数据的操作，都会导致当前事务等待。
+
+这是 SQL 标准规定的默认隔离级别。实际上，通常不需要这种严格的程度，因此 InnoDB 的默认隔离级别是下一个最严格的 `REPEATABLE READ`。
+
+参见：`ACID`，`consistent read`，`isolation level`，`locking`，`REPEATABLE READ`，`transaction`。
+
+---
+
+**serialized dictionary information (SDI)**
+
+序列化形式的字典对象元数据。SDI 以 JSON 格式存储。
+
+从 MySQL 8.0.3 开始，SDI 存在于除临时表空间和撤消表空间文件以外的所有 InnoDB 表空间文件中。表空间文件中存在 SDI 提供了元数据冗余。例如，如果数据字典不可用，可以使用 `ibd2sdi` 工具从表空间文件中提取字典对象元数据。
+
+对于 `MyISAM` 表，SDI 存储在架构目录中的 .sdi 元数据文件中。执行 `IMPORT TABLE` 操作时需要 `SDI` 元数据文件。
+
+参见：`file-per-table`，`general tablespace`，`system tablespace`，`tablespace`。
+
+---
+
+**server**
+
+一种程序，持续运行，等待接收并执行来自另一个程序（客户端）的请求。因为通常整个计算机都用于运行一个或多个服务器程序（如数据库服务器、Web 服务器、应用服务器或这些的组合），所以术语“服务器”也可以指运行服务器软件的计算机。
+
+参见：`client`，`mysqld`。
+
+---
+
+**server-side prepared statement**
+
+由 MySQL 服务器管理的预处理语句。历史上，由于服务器端预处理语句的问题，`Connector/J` 和 `Connector/PHP` 开发人员有时会使用客户端预处理语句。使用现代 MySQL 服务器版本，推荐使用服务器端预处理语句以提高性能、可扩展性和内存效率。
+
+参见：`client-side prepared statement`，`Connector/J`，`Connector/PHP`，`prepared statement`。
+
+---
+
+**service principal name**
+
+表示服务的 Kerberos 命名实体名称。
+
+参见：`principal`。
+
+---
+
+**service ticket**
+
+提供对应用服务（如 Web 或数据库服务器提供的服务）访问权限的 Kerberos 票证。
+
+---
+
+**servlet**
+
+参见：`Connector/J`。
+
+---
+
+**session temporary tablespace**
+
+存储用户创建的临时表和由优化器创建的内部临时表的临时表空间，当 InnoDB 被配置为内部临时表的磁盘
