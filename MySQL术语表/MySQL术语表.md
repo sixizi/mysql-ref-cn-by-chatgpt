@@ -3277,3 +3277,57 @@ InnoDB 将长度大于或等于 768 字节的定长字段视为可变长度字�
 - Connector/C++ 8.0: 平台支持和先决条件
 
 参见：`Connector/C++`，`Connector/NET`。
+
+## W
+
+**wait**
+
+当某个操作（如获取`锁`、`互斥锁（mutex）`或`闩锁（latch）`）无法立即完成时，InnoDB 会暂停并再次尝试。这种暂停机制足够复杂，以至于这种操作有一个专有名称，称为“等待（wait）”。单个线程的暂停是通过 InnoDB 内部调度、操作系统的 `wait()` 调用以及短时间的自旋循环组合来实现的。
+
+在负载较重、事务较多的系统中，你可以使用 `SHOW INNODB STATUS` 命令或 `Performance Schema` 的输出来确定线程是否花费了太多时间在等待上，以及如何提高并发性。
+
+参见：`concurrency`，`latch`，`lock`，`mutex`，`Performance Schema`，`spin`。
+
+**warm backup**
+
+在数据库运行时进行的备份，但在备份过程中限制了一些数据库操作。例如，表可能变为只读状态。对于繁忙的应用程序和网站，您可能更倾向于使用热备份。
+
+参见：`backup`，`cold backup`，`hot backup`。
+
+**warm up**
+
+在系统启动后，在典型工作负载下运行一段时间，以便填充缓冲池和其他内存区域，使其达到正常条件下的状态。这一过程在 MySQL 服务器重启或受到新工作负载时会自然发生。
+
+通常，你会在性能测试前运行一段时间的工作负载，以便在多次运行中确保一致的测试结果；否则，在第一次运行时，性能可能会因初始加载较低。
+
+在 MySQL 5.6 中，你可以通过启用 `innodb_buffer_pool_dump_at_shutdown` 和 `innodb_buffer_pool_load_at_startup` 配置选项来加速热身过程，以便在重启后将缓冲池的内容重新加载到内存中。在 MySQL 5.7 中，这些选项默认已启用。参见《第 17.8.3.6 节，Saving and Restoring the Buffer Pool State》。
+
+参见：`buffer pool`，`workload`。
+
+**workload**
+
+SQL 和其他数据库操作的组合和量级，由数据库应用程序在典型或峰值使用期间执行。在性能测试期间，你可以让数据库承受特定的工作负载，以识别瓶颈，或在容量规划期间使用。
+
+参见：`bottleneck`，`CPU-bound`，`disk-bound`，`SQL`。
+
+**write combining**
+
+一种优化技术，当从 InnoDB 缓冲池中刷新脏页时减少写操作。如果页面中的某一行被多次更新，或者同一页面中的多行被更新，则所有这些更改都会在单个写操作中存储到数据文件中，而不是为每个更改执行一次写操作。
+
+参见：`buffer pool`，`dirty page`，`flush`。
+
+**XA**
+
+一种用于协调分布式事务的标准接口，允许多个数据库参与同一个事务，同时保持 `ACID` 合规性。详情参见《第 15.3.8 节，XA Transactions》。
+
+默认启用 `XA` 分布式事务支持。
+
+参见：`ACID`，`binary log`，`commit`，`transaction`，`two-phase commit`。
+
+## Y
+
+**young**
+
+InnoDB 缓冲池中页的一个特征，表示它最近已被访问，并因此在缓冲池的数据结构中移动，以免因 `LRU` 算法而过早刷新。该术语在与缓冲池相关的某些 `INFORMATION_SCHEMA` 列名中使用。
+
+参见：`buffer pool`，`flush`，`INFORMATION_SCHEMA`，`LRU`，`page`。
