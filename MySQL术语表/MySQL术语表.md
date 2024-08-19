@@ -2962,3 +2962,168 @@ MySQL 还具有所谓的严格模式。参见《第 7.1.11 节，服务器 SQL �
 InnoDB 在 MySQL 5.7.6 中引入了通用表空间，这些表空间也由 .ibd 文件表示。通用表空间是使用 `CREATE TABLESPACE` 语法创建的共享表空间。它们可以在数据目录之外创建，能够容纳多个表，并支持所有行格式的表。
 
 参见：`change buffer`，`compression`，`data dictionary`，`database`，`doublewrite buffer`，`dynamic row format`，`file-per-table`，`general tablespace`，`.ibd file`，`ibdata file`，`innodb_file_per_table`，`instance`，`MySQL Enterprise Backup`，`off-page column`，`tablespace`，`undo log`。
+
+**table**  
+每个 MySQL 表都与特定的存储引擎相关联。InnoDB 表具有特定的物理和逻辑特性，这些特性会影响性能、可扩展性、备份、管理和应用程序开发。
+
+在文件存储方面，InnoDB 表属于以下类型之一的表空间：
+
+- 共享的 InnoDB 系统表空间，由一个或多个 `ibdata` 文件组成。
+- 每个表一个文件的表空间，由单个 `.ibd` 文件组成。
+- 共享的通用表空间，由单个 `.ibd` 文件组成。通用表空间是在 MySQL 5.7.6 中引入的。
+
+`.ibd` 数据文件包含表和索引数据。
+
+在每个表一个文件的表空间中创建的 InnoDB 表可以使用 `DYNAMIC` 或 `COMPRESSED` 行格式。这些行格式使得 InnoDB 能够使用诸如压缩、离页列的有效存储以及大索引键前缀等功能。通用表空间支持所有行格式。
+
+系统表空间支持使用 `REDUNDANT`、`COMPACT` 和 `DYNAMIC` 行格式的表。系统表空间对 `DYNAMIC` 行格式的支持是在 MySQL 5.7.6 中添加的。
+
+InnoDB 表的行被组织成一种称为聚簇索引的索引结构，条目根据表的主键列排序。数据访问针对过滤和排序主键列的查询进行了优化，每个索引都包含每个条目相关的主键列的副本。修改任何主键列的值是一项昂贵的操作。因此，InnoDB 表设计的一个重要方面是选择用于最重要查询的列作为主键，并保持主键短且不常变化。
+
+参见：`backup`，`clustered index`，`compact row format`，`compressed row format`，`compression`，`dynamic row format`，`Fast Index Creation`，`file-per-table`，`.ibd file`，`index`，`off-page column`，`primary key`，`redundant row format`，`row`，`system tablespace`，`tablespace`。
+
+---
+
+**table lock**  
+一种锁定机制，防止任何其他事务访问表。InnoDB 通过使用诸如在线 DDL、行锁和一致读取等技术来处理 DML 语句和查询，尽量避免这种锁定的必要性。可以通过使用 `LOCK TABLE` 语句在 SQL 中创建这样的锁；从其他数据库系统或 MySQL 存储引擎迁移时，尽可能去除这些语句。
+
+参见：`consistent read`，`DML`，`lock`，`locking`，`online DDL`，`query`，`row lock`，`table`，`transaction`。
+
+---
+
+**table scan**  
+参见：`full table scan`。
+
+---
+
+**table statistics**  
+参见：`statistics`。
+
+---
+
+**table type**  
+存储引擎的过时同义词。我们提到 InnoDB 表、MyISAM 表等。
+
+参见：`InnoDB`，`storage engine`。
+
+---
+
+**tablespace**  
+一个可以容纳一个或多个 InnoDB 表及相关索引的数据文件。
+
+系统表空间包含 InnoDB 数据字典，并且在 MySQL 5.6 之前默认保存所有其他 InnoDB 表。
+
+`innodb_file_per_table` 选项在 MySQL 5.6 及更高版本中默认启用，允许表在各自的表空间中创建。每个表一个文件的表空间支持诸如离页列的有效存储、表压缩和可传输表空间等功能。详细信息请参见《第 17.6.3.2 节，每个表一个文件的表空间》。
+
+InnoDB 在 MySQL 5.7.6 中引入了通用表空间。通用表空间是使用 `CREATE TABLESPACE` 语法创建的共享表空间。它们可以在 MySQL 数据目录之外创建，能够容纳多个表，并支持所有行格式的表。
+
+MySQL NDB Cluster 还将其表分组到表空间中。详细信息请参见《第 25.6.11.1 节，NDB Cluster 磁盘数据对象》。
+
+参见：`compressed row format`，`data dictionary`，`data files`，`file-per-table`，`general tablespace`，`index`，`innodb_file_per_table`，`system tablespace`，`table`。
+
+---
+
+**Tcl**  
+一种编程语言，起源于 Unix 脚本领域。有时由用 C、C++ 或 Java 编写的代码扩展。有关 MySQL 的开源 Tcl API，请参见《第 31.12 节，MySQL Tcl API》。
+
+参见：`API`。
+
+---
+
+**temporary table**  
+一种数据不需要真正永久存储的表。例如，临时表可能被用作复杂计算或转换中的中间结果的存储区域；这些中间数据在崩溃后不需要恢复。数据库产品可以采取各种快捷方式来提高对临时表的操作性能，例如减少将数据写入磁盘的频率以及保护数据跨重启的其他措施。
+
+有时，数据本身会在设定时间自动删除，例如在事务结束或会话结束时删除。在某些数据库产品中，表本身也会自动删除。
+
+参见：`table`。
+
+---
+
+**temporary tablespace**  
+InnoDB 使用两种类型的临时表空间。会话临时表空间存储用户创建的临时表和优化器创建的内部临时表。全局临时表空间存储对用户创建的临时表进行更改的回滚段。
+
+参见：`global temporary tablespace`，`session temporary tablespace`，`temporary table`。
+
+---
+
+**text collection**  
+包含在 `FULLTEXT` 索引中的列集合。
+
+参见：`FULLTEXT index`。
+
+---
+
+**TGS**  
+Kerberos 中的票据授予服务器（TGS）。TGS 也可以指由票据授予服务器提供的票据授予服务。
+
+参见：`ticket-granting server`。
+
+---
+
+**TGT**  
+参见：`ticket-granting ticket`。
+
+---
+
+**thread**  
+一个处理单元，通常比进程更轻量化，允许更高的并发性。
+
+参见：`concurrency`，`master thread`，`process`，`Pthreads`。
+
+---
+
+**ticket-granting server**  
+在 Kerberos 中，提供票据的服务器。票据授予服务器（TGS）与认证服务器（AS）一起构成密钥分发中心（KDC）。
+
+TGS 也可以指由票据授予服务器提供的票据授予服务。
+
+参见：`authentication server`，`key distribution center`。
+
+---
+
+**ticket-granting ticket**  
+在 Kerberos 中，票据授予票据用于向票据授予服务器（TGS）获取服务访问的服务票据。
+
+参见：`ticket-granting server`。
+
+---
+
+**Tomcat**  
+一个开源 J2EE 应用服务器，支持 Java Servlet 和 JavaServer Pages 编程技术。由一个 Web 服务器和 Java servlet 容器组成。通常与 MySQL 配合使用 `Connector/J`。
+
+参见：`J2EE`。
+
+---
+
+**torn page**  
+由于 I/O 设备配置和硬件故障的组合而可能发生的一种错误情况。如果数据以小于 InnoDB 页大小（默认 16KB）的块写出，写入时的硬件故障可能会导致仅部分页被存储到磁盘。InnoDB 的双写缓冲区可以防止这种情况发生。
+
+参见：`doublewrite buffer`。
+
+---
+
+**TPS**  
+“每秒事务数”的缩写，有时在基准测试中使用的测量单位。其值取决于特定基准测试表示的工作负载，以及您控制的因素，例如硬件容量和数据库配置。
+
+参见：`transaction`，`workload`。
+
+---
+
+**transaction**  
+事务是可以提交或回滚的原子工作单元。当事务对数据库进行多次更改时，要么在提交事务时所有更改都成功，要么在回滚事务时所有更改都被撤消。
+
+由 InnoDB 实现的数据库事务具有被统称为 `ACID` 的属性，代表原子性、一致性、隔离性和持久性。
+
+参见：`ACID`，`commit`，`isolation level`，`lock`，`rollback`。
+
+---
+
+**transaction ID**  
+与每一行相关联的内部字段。该字段通过插入、更新和删除操作来记录哪个事务锁定了该行。
+
+参见：`implicit row lock`，`row`，`transaction`。
+
+---
+
+**transparent page compression**  
+MySQL 5.7.8 中添加的一项功能，允许在文件逐个表的表空间中的 InnoDB 表执行页级压缩。通过在 `CREATE TABLE` 或 `ALTER TABLE` 中指定 `COMPRESSION` 属性来启用页面压缩。更多信息，请参
