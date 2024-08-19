@@ -3228,3 +3228,52 @@ Unicode 支持是 ODBC 标准的重要方面。`Connector/ODBC 5.1` 是一个 Un
 Kerberos 中代表用户的命名实体的名称。
 
 参见：`principal`。
+
+## V
+
+**variable-length type**
+
+一种可变长度的数据类型。`VARCHAR`、`VARBINARY` 以及 `BLOB` 和 `TEXT` 类型都是可变长度类型。
+
+InnoDB 将长度大于或等于 768 字节的定长字段视为可变长度字段，这些字段可以存储在页外。例如，如果字符集的最大字节长度大于 3，像 `CHAR(255)` 列这样的字段可能会超过 768 字节，如使用 `utf8mb4` 字符集时。
+
+参见：`off-page column`，`overflow page`。
+
+**victim**
+
+在检测到死锁时自动选择的事务，被选择的事务将被回滚。InnoDB 会回滚更新行数最少的事务。
+
+可以使用 `innodb_deadlock_detect` 配置选项禁用死锁检测。
+
+参见：`deadlock`，`deadlock detection`，`innodb_lock_wait_timeout`，`transaction`。
+
+**view**
+
+一种存储的查询，当调用时会生成一个结果集。视图充当虚拟表。
+
+**virtual column**
+
+参见：`virtual generated column`。
+
+**virtual generated column**
+
+一种列，其值由列定义中包含的表达式计算得出。列值不存储，但在读取行时计算，并在任何 `BEFORE` 触发器之后立即计算。虚拟生成列不占用存储空间。InnoDB 支持在虚拟生成列上创建二级索引。
+
+与存储生成列（`stored generated column`）相比，虚拟生成列不占用存储空间。
+
+参见：`base column`，`generated column`，`stored generated column`。
+
+**virtual index**
+
+虚拟索引是一个或多个虚拟生成列或虚拟生成列与常规列或存储生成列的组合上的二级索引。有关详细信息，请参见《第 15.1.20.9 节，Secondary Indexes and Generated Columns》。
+
+参见：`secondary index`，`stored generated column`，`virtual generated column`。
+
+**Visual Studio**
+
+有关 Visual Studio 受支持版本的参考，请参见以下内容：
+
+- Connector/NET: Connector/NET 版本支持
+- Connector/C++ 8.0: 平台支持和先决条件
+
+参见：`Connector/C++`，`Connector/NET`。
