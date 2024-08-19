@@ -3155,3 +3155,85 @@ MySQL 5.7.8 中添加的一项功能，允许在文件逐个表的表空间中�
 
 参见：`commit`，`rollback`，`transaction`，`XA`。
 
+## U
+
+**undo**  
+事务生命周期中维护的数据，记录所有更改，以便在回滚操作中可以撤销这些更改。它存储在 `undo logs` 中，这些日志位于系统表空间（MySQL 5.7 及以前）或单独的 `undo tablespaces` 中。从 MySQL 8.0 开始，`undo logs` 默认位于 `undo tablespaces` 中。
+
+参见：`rollback`，`rollback segment`，`system tablespace`，`transaction`，`undo log`，`undo tablespace`。
+
+---
+
+**undo buffer**  
+参见：`undo log`。
+
+---
+
+**undo log**  
+存储区，用于保存由活动事务修改的数据的副本。如果另一个事务需要查看原始数据（作为一致性读取操作的一部分），则从该存储区检索未修改的数据。
+
+在 MySQL 5.6 和 MySQL 5.7 中，可以使用 `innodb_undo_tablespaces` 变量将 `undo logs` 存放在 `undo tablespaces` 中，这些表空间可以放置在另一个存储设备上，如 SSD 中。在 MySQL 8.0 中，`undo logs` 存放在 MySQL 初始化时创建的两个默认 `undo tablespaces` 中，可以使用 `CREATE UNDO TABLESPACE` 语法创建其他 `undo tablespaces`。
+
+`undo log` 分为两个部分：插入 `undo buffer` 和更新 `undo buffer`。
+
+参见：`consistent read`，`rollback segment`，`SSD`，`system tablespace`，`transaction`，`undo tablespace`。
+
+---
+
+**undo log segment**  
+`undo logs` 的集合。`undo log segments` 存在于 `rollback segments` 中。一个 `undo log segment` 可能包含来自多个事务的 `undo logs`。一个 `undo log segment` 一次只能被一个事务使用，但在事务提交或回滚后可以重复使用。也可能被称为“`undo segment`”。
+
+参见：`commit`，`rollback`，`rollback segment`，`undo log`。
+
+---
+
+**undo tablespace**  
+`undo tablespace` 包含 `undo logs`。`undo logs` 存在于 `undo log segments` 中，而这些 `undo log segments` 存在于 `rollback segments` 中。传统上，`rollback segments` 位于系统表空间中。从 MySQL 5.6 开始，`rollback segments` 可以位于 `undo tablespaces` 中。在 MySQL 5.6 和 MySQL 5.7 中，`undo tablespaces` 的数量由 `innodb_undo_tablespaces` 配置选项控制。在 MySQL 8.0 中，MySQL 实例初始化时创建了两个默认的 `undo tablespaces`，并且可以使用 `CREATE UNDO TABLESPACE` 语法创建其他 `undo tablespaces`。
+
+有关更多信息，请参见《第 17.6.3.4 节，Undo Tablespaces》。
+
+参见：`rollback segment`，`system tablespace`，`undo log`，`undo log segment`。
+
+---
+
+**Unicode**  
+一种系统，支持国家字符、字符集、代码页和其他国际化方面，以灵活和标准化的方式实现。
+
+Unicode 支持是 ODBC 标准的重要方面。`Connector/ODBC 5.1` 是一个 Unicode 驱动程序，而 `Connector/ODBC 3.51` 是一个 ANSI 驱动程序。
+
+参见：`ANSI`，`Connector/ODBC`，`ODBC`。
+
+---
+
+**unique constraint**  
+一种约束，断言列中不能包含任何重复值。在关系代数中，它用于指定一对一的关系。为了有效检查值是否可以插入（即该值是否已存在于列中），`unique constraint` 由一个底层的 `unique index` 支持。
+
+参见：`constraint`，`relational`，`unique index`。
+
+---
+
+**unique index**  
+在具有 `unique constraint` 的列或列集上的索引。由于已知该索引不包含任何重复值，因此某些类型的查找和计数操作比常规索引更高效。对这种类型索引的大多数查找只是为了确定某个值是否存在。索引中的值数量与表中的行数相同，或者至少与相关列中非空值的行数相同。
+
+更改缓冲优化不适用于唯一索引。作为一种解决方法，可以在向 InnoDB 表批量加载数据时临时设置 `unique_checks=0`。
+
+参见：`cardinality`，`change buffering`，`unique constraint`，`unique key`。
+
+---
+
+**unique key**  
+构成 `unique index` 的列集（一个或多个）。当您可以定义一个 `WHERE` 条件匹配确切的一行时，并且查询可以使用相关的 `unique index`，那么查找和错误处理可以非常高效地执行。
+
+参见：`cardinality`，`unique constraint`，`unique index`。
+
+---
+
+**UPN**  
+参见：`user principal name`。
+
+---
+
+**user principal name**  
+Kerberos 中代表用户的命名实体的名称。
+
+参见：`principal`。
