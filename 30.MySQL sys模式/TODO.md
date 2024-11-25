@@ -1,0 +1,25 @@
+# 第30章 MySQL `sys` 架构
+
+## 目录
+
+- 30.1 使用 `sys` 架构的先决条件
+- 30.2 使用 `sys` 架构
+- 30.3 `sys` 架构的进度报告
+- 30.4 `sys` 架构对象参考
+
+MySQL 8.0 包含了 `sys` 架构，这是一个帮助数据库管理员（DBAs）和开发人员解释由 Performance Schema 收集的数据的对象集合。`sys` 架构的对象可以用于常见的调优和诊断场景。此架构中的对象包括：
+
+- **视图**：将 Performance Schema 数据汇总为更易理解的形式。
+- **存储过程**：执行例如 Performance Schema 配置和生成诊断报告的操作。
+- **存储函数**：查询 Performance Schema 配置并提供格式化服务。
+
+### `sys` 架构的安装
+
+对于新安装，如果在初始化数据目录时使用 `mysqld` 的 `--initialize` 或 `--initialize-insecure` 选项，`sys` 架构会默认安装。如果不需要，可以在初始化后手动删除 `sys` 架构。
+
+> **提示**：
+> 如果 `sys` 架构已经存在但没有版本视图（version view），MySQL 升级过程会报错，假设这可能是用户创建的 `sys` 架构。此时进行升级需要先移除或重命名现有的 `sys` 架构。
+
+### `sys` 架构的对象权限
+
+`sys` 架构的对象定义者（`DEFINER`）为 `'mysql.sys'@'localhost'`。使用专用的 `mysql.sys` 账号可以避免在 DBA 重命名或删除 `root` 账号时出现问题。
