@@ -16,3 +16,7 @@ _book
 *.pdf
 .DS_Store
 .gitignore
+
+# Python cache
+__pycache__/
+*.py[cod]
