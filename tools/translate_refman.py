@@ -206,6 +206,7 @@ def choose_old_path(
     numeric: dict[str, list[Path]],
     appendix: dict[str, list[Path]],
     english_titles: dict[str, list[Path]],
+    previous_paths: dict[str, Path],
 ) -> tuple[Path | None, str]:
     key = item["key"]
     direct = path_for_key(key, numeric, appendix)
@@ -231,6 +232,9 @@ def choose_old_path(
     mapped = path_for_key(candidates[0].key or "", numeric, appendix)
     if mapped:
         return mapped[0], f"title-path:{candidates[0].key}"
+    previous_match = previous_paths.get(candidates[0].key or "")
+    if previous_match:
+        return previous_match, f"previous-plan:{candidates[0].key}"
     english_matches = english_titles.get(normalize_title(item["title_b"]), [])
     try:
         chapter = int(key.split(".")[0])
@@ -421,6 +425,13 @@ def new_file_path(root: Path, key: str, raw_path: tuple[str, ...]) -> Path:
     return base / f"{sort_key}.{display_titles[-1]}.md"
 
 
+def load_previous_paths(path: str | None) -> dict[str, Path]:
+    if not path:
+        return {}
+    rows = json.loads(Path(path).read_text(encoding="utf-8"))
+    return {row["key"]: Path(row["path"]) for row in rows}
+
+
 def cmd_translate(args: argparse.Namespace) -> int:
     root = Path.cwd()
     pdf_path = root / args.pdf
@@ -437,6 +448,7 @@ def cmd_translate(args: argparse.Namespace) -> int:
     old_nodes = outline_nodes(PdfReader(old_pdf_path))
     pages = load_pages(text_path)
     numeric, appendix, english_titles = build_markdown_index(root)
+    previous_paths = load_previous_paths(args.previous_plan)
 
     endpoint = os.environ["BITDEER_API_URL"].rstrip("/") + "/chat/completions"
     api_key = os.environ["BITDEER_API_KEY"]
@@ -452,7 +464,7 @@ def cmd_translate(args: argparse.Namespace) -> int:
         if state.get(key) == "done" and not args.force:
             continue
         existing, reason = choose_old_path(
-            item, target_nodes, old_nodes, numeric, appendix, english_titles
+            item, target_nodes, old_nodes, numeric, appendix, english_titles, previous_paths
         )
         matches = [node for node in target_nodes if node.key == key and node.leaf]
         raw_path = matches[0].raw_path if matches else (item["title_b"],)
@@ -516,10 +528,11 @@ def cmd_plan(args: argparse.Namespace) -> int:
     target_nodes = outline_nodes(PdfReader(root / args.pdf))
     old_nodes = outline_nodes(PdfReader(root / args.old_pdf))
     numeric, appendix, english_titles = build_markdown_index(root)
+    previous_paths = load_previous_paths(args.previous_plan)
     rows = []
     for item in json.loads(Path(args.diff_json).read_text(encoding="utf-8")):
         existing, reason = choose_old_path(
-            item, target_nodes, old_nodes, numeric, appendix, english_titles
+            item, target_nodes, old_nodes, numeric, appendix, english_titles, previous_paths
         )
         matches = [node for node in target_nodes if node.key == item["key"] and node.leaf]
         raw_path = matches[0].raw_path if matches else (item["title_b"],)
@@ -571,6 +584,7 @@ def build_parser() -> argparse.ArgumentParser:
     plan_parser.add_argument("--pdf", required=True)
     plan_parser.add_argument("--old-pdf", required=True)
     plan_parser.add_argument("--diff-json", required=True)
+    plan_parser.add_argument("--previous-plan")
     plan_parser.add_argument("--output", required=True)
     plan_parser.set_defaults(func=cmd_plan)
 
@@ -583,6 +597,7 @@ def build_parser() -> argparse.ArgumentParser:
     translate_parser.add_argument("--old-pdf", required=True)
     translate_parser.add_argument("--text", required=True)
     translate_parser.add_argument("--diff-json", required=True)
+    translate_parser.add_argument("--previous-plan")
     translate_parser.add_argument("--model", default=os.environ.get("BITDEER_MODEL", "claude-haiku"))
     translate_parser.add_argument("--workers", type=int, default=10)
     translate_parser.add_argument("--offset", type=int, default=0)
